@@ -21,3 +21,5 @@
 [0.3.0] development: Added error catching when creating new request
 
 [0.4.0] development: Added structure for case history
+
+[0.5.0] development: Added request for case history

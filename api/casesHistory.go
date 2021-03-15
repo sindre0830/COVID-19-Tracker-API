@@ -1,5 +1,9 @@
 package api
 
+import (
+	"encoding/json"
+)
+
 type casesHistory struct {
 	All struct {
 		Country           string 		 `json:"country"`
@@ -14,4 +18,16 @@ type casesHistory struct {
 		CapitalCity       string 		 `json:"capital_city"`
 		Dates 		      map[string]int `json:"dates"`
 	} `json:"All"`
+}
+
+func (object *casesHistory) req(url string) error {
+	//gets raw output from API
+	output, err := requestData(url)
+	//branch if there is an error
+	if err != nil {
+		return err
+	}
+	//convert raw output to JSON
+	err = json.Unmarshal(output, &object)
+	return err
 }
