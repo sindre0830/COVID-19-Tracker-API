@@ -17,3 +17,5 @@
 [0.2.1] formatting: Renamed coronaCases structure to cases
 
 [0.2.2] formatting: Renamed casesRaw structure to casesTotal
+
+[0.3.0] development: Added error catching when creating new request

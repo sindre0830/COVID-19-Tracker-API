@@ -12,6 +12,10 @@ func requestData(url string) ([]byte, error) {
 	var err error
 	//create new request
 	req, err := http.NewRequest(http.MethodGet, url, nil)
+	//branch if there is an error
+	if err != nil {
+		return nil, err
+	}
 	//timeout after 2 seconds
 	apiClient := http.Client{
 		Timeout: time.Second * 2,
