@@ -11,3 +11,5 @@
 [0.1.1] formatting: Changed confirmed/recoverd fields in structure for corona cases to int32
 
 [0.1.2] formatting: Fixed naming mistake in structure for corona cases
+
+[0.2.0] development: Added get request for all corona cases
