@@ -40,3 +40,20 @@ func (object *Cases) getHistory(country string, startDate string, endDate string
 	object.PopulationPercentage = 0.00
 	return nil
 }
+
+func (object *Cases) get(country string, startDate string, endDate string) error {
+	if startDate == "" {
+		err := object.getTotal(country)
+		//branch if there is an error
+		if err != nil {
+			return err
+		}
+	} else {
+		err := object.getHistory(country, startDate, endDate)
+		//branch if there is an error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

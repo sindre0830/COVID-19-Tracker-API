@@ -29,3 +29,5 @@
 [0.6.1] formatting: Added same get/req structure in casesTotal as in casesHistory for consistency
 
 [0.7.0] development: Added getTotal and getHistory in cases
+
+[0.8.0] development: Added getTotal and getHistory in cases
