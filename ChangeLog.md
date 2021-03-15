@@ -19,3 +19,5 @@
 [0.2.2] formatting: Renamed casesRaw structure to casesTotal
 
 [0.3.0] development: Added error catching when creating new request
+
+[0.4.0] development: Added structure for case history
