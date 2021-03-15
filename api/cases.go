@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/debug"
 	"main/fun"
 	"net/http"
@@ -86,15 +85,28 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	err = object.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
-		fmt.Println(err)
+		debug.UpdateErrorMessage(
+			http.StatusInternalServerError, 
+			"Cases.Handler() -> Cases.get() -> Getting covid cases data",
+			err.Error(),
+			"Unknown",
+		)
+		debug.PrintErrorInformation(w)
+		return
 	}
 	//set header to JSON
 	w.Header().Set("Content-Type", "application/json")
 	//send output to user
 	err = json.NewEncoder(w).Encode(object)
-	//branch if there is an error
+	//branch if something went wrong with output
 	if err != nil {
-		fmt.Println(err)
+		debug.UpdateErrorMessage(
+			http.StatusInternalServerError, 
+			"Cases.Handler() -> Sending data to user",
+			err.Error(),
+			"Unknown",
+		)
+		debug.PrintErrorInformation(w)
 	}
 }
 

@@ -41,3 +41,5 @@
 [0.12.0] development: Added date validation (from assignment-1)
 
 [0.13.0] development: Added URL parsing in cases
+
+[0.11.0] development: Added proper error handling when getting cases and outputting to user
