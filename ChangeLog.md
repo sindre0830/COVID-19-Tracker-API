@@ -36,4 +36,4 @@
 
 [0.10.0] development: Changed handler in cases to handle HTTP requests
 
-[0.11.0] development: Added error handler (from assignment 1)
+[0.11.0] development: Added error handler (from assignment-1)
