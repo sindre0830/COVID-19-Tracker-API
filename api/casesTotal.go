@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-type casesRaw struct {
+type casesTotal struct {
 	All struct {
 		Confirmed         int    `json:"confirmed"`
 		Recovered         int    `json:"recovered"`
@@ -25,7 +25,7 @@ type casesRaw struct {
 	} `json:"all"`
 }
 
-func (object *casesRaw) get(country string) error {
+func (object *casesTotal) get(country string) error {
 	//url to API
 	url := "https://covid-api.mmediagroup.fr/v1/cases?country=" + country
 	//gets raw output from API

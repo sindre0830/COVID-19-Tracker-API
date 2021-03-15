@@ -15,3 +15,5 @@
 [0.2.0] development: Added get request for all corona cases
 
 [0.2.1] formatting: Renamed coronaCases structure to cases
+
+[0.2.2] formatting: Renamed casesRaw structure to casesTotal
