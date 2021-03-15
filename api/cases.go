@@ -1,6 +1,6 @@
 package api
 
-type coronaCases struct {
+type cases struct {
 	Country              string  `json:"country"`
 	Continent            string  `json:"continent"`
 	Scope                string  `json:"scope"`

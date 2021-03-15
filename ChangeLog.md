@@ -13,3 +13,5 @@
 [0.1.2] formatting: Fixed naming mistake in structure for corona cases
 
 [0.2.0] development: Added get request for all corona cases
+
+[0.2.1] formatting: Renamed coronaCases structure to cases
