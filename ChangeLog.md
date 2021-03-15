@@ -26,4 +26,6 @@
 
 [0.6.0] development: Added get and addCases for case history
 
-[0.6.1] development: Added same get/req structure in casesTotal as in casesHistory for consistency
+[0.6.1] formatting: Added same get/req structure in casesTotal as in casesHistory for consistency
+
+[0.7.0] development: Added getTotal and getHistory in cases
