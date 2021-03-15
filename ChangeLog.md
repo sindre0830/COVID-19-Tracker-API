@@ -7,3 +7,5 @@
 [0.0.2] setup: Added GITIGNORE to ignore executable files
 
 [0.1.0] development: Added structure for corona cases
+
+[0.1.1] formatting: Changed confirmed/recoverd fields in structure for corona cases to int32
