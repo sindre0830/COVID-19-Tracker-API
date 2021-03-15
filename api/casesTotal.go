@@ -28,6 +28,11 @@ type casesTotal struct {
 func (object *casesTotal) get(country string) error {
 	//url to API
 	url := "https://covid-api.mmediagroup.fr/v1/cases?country=" + country
+	err := object.req(url)
+	return err
+}
+
+func (object *casesTotal) req(url string) error {
 	//gets raw output from API
 	output, err := requestData(url)
 	//branch if there is an error

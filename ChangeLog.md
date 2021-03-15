@@ -25,3 +25,5 @@
 [0.5.0] development: Added request for case history
 
 [0.6.0] development: Added get and addCases for case history
+
+[0.6.1] development: Added same get/req structure in casesTotal as in casesHistory for consistency
