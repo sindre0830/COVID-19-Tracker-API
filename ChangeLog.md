@@ -35,3 +35,5 @@
 [0.9.0] development: Added simple I/O handler in cases
 
 [0.10.0] development: Changed handler in cases to handle HTTP requests
+
+[0.11.0] development: Added error handler (from assignment 1)
