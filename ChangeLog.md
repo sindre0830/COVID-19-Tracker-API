@@ -23,3 +23,5 @@
 [0.4.0] development: Added structure for case history
 
 [0.5.0] development: Added request for case history
+
+[0.6.0] development: Added get and addCases for case history
