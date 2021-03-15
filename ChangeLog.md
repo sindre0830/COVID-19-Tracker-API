@@ -30,4 +30,4 @@
 
 [0.7.0] development: Added getTotal and getHistory in cases
 
-[0.8.0] development: Added getTotal and getHistory in cases
+[0.8.0] development: Added get in cases to call on either getTotal or getHistory
