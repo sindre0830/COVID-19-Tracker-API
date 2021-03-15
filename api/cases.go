@@ -1,5 +1,7 @@
 package api
 
+import "fmt"
+
 type Cases struct {
 	Country              string  `json:"country"`
 	Continent            string  `json:"continent"`
@@ -7,6 +9,16 @@ type Cases struct {
 	Confirmed            int     `json:"confirmed"`
 	Recovered            int     `json:"recovered"`
 	PopulationPercentage float32 `json:"population_percentage"`
+}
+
+func (object *Cases) Handler(country string, startDate string, endDate string) {
+	err := object.get(country, startDate, endDate)
+	//branch if there is an error
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(object)
+	}
 }
 
 func (object *Cases) getTotal(country string) error {

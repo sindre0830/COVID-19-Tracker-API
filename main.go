@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"main/api"
 	"net/http"
 	"os"
 )
@@ -14,6 +15,10 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+
+	var cases api.Cases
+	cases.Handler("Norway", "2020-12-01", "2021-01-31")
+
 	//ends program if it can't open port
 	log.Fatal(http.ListenAndServe(":" + port, nil))
 }
