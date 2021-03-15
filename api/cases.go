@@ -3,7 +3,11 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"main/debug"
+	"main/fun"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type Cases struct {
@@ -16,7 +20,70 @@ type Cases struct {
 }
 
 func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
-	err := object.get("Norway", "2020-12-01", "2021-01-31")
+	//split URL path by '/'
+	arrURL := strings.Split(r.URL.Path, "/")
+	//branch if there is an error
+	if len(arrURL) != 5 {
+		debug.UpdateErrorMessage(
+			http.StatusBadRequest, 
+			"Cases.Handler() -> Checking length of URL",
+			"url validation: either too many or too few arguments in url path",
+			"Path format. Expected format: '.../country?scope=start_at-end_at' ('?scope=start_at-end_at' is optional). Example: '.../norway?scope=2020-01-20-2021-02-01'.",
+		)
+		debug.PrintErrorInformation(w)
+		return
+	}
+	country := arrURL[4]
+	//set default scope to nil (total)
+	startDate := ""
+	endDate := ""
+	//get all parameters from URL
+	arrPathParameters, err := url.ParseQuery(r.URL.RawQuery)
+	//branch if there is an error
+	if err != nil {
+		debug.UpdateErrorMessage(
+			http.StatusInternalServerError, 
+			"Cases.Handler() -> Getting URL field (...?scope=start_at-end_at)",
+			err.Error(),
+			"Unknown",
+		)
+		debug.PrintErrorInformation(w)
+		return
+	}
+	//branch if any parameters exist
+	if len(arrPathParameters) > 0 {
+		//branch if field 'scope' exist
+		if targetParameter, ok := arrPathParameters["scope"]; ok {
+			dates := targetParameter[0]
+			err := fun.ValidateDates(dates)
+			//branch if there is an error
+			if err != nil {
+				debug.UpdateErrorMessage(
+					http.StatusBadRequest, 
+					"Cases.Handler() -> Checking if inputed dates are valid",
+					err.Error(),
+					"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?2020-01-20-2021-02-01'",
+				)
+				debug.PrintErrorInformation(w)
+				return
+			}
+			//set start- and end date variables
+			startDate = dates[:10]
+			endDate = dates[11:]
+		//branch if there is an error
+		} else {
+			debug.UpdateErrorMessage(
+				http.StatusBadRequest, 
+				"Cases.Handler() -> Validating path parameters",
+				"path validation: fields in URL used, but doesn't contain 'scope'",
+				"Wrong field, or typo. Expected format: '...?scope=start_at-end_at'. Example: '...?scope=2020-01-20-2021-02-01'.",
+			)
+			debug.PrintErrorInformation(w)
+			return
+		}
+	}
+	//get data based on country and scope
+	err = object.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
 		fmt.Println(err)

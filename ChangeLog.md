@@ -39,3 +39,5 @@
 [0.11.0] development: Added error handler (from assignment-1)
 
 [0.12.0] development: Added date validation (from assignment-1)
+
+[0.13.0] development: Added URL parsing in cases
