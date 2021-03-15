@@ -15,10 +15,10 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-
+	//declare structures with handlers
 	var cases api.Cases
-	cases.Handler("Norway", "2020-12-01", "2021-01-31")
-
+	//handle corona cases
+	http.HandleFunc("/corona/v1/country/", cases.Handler)
 	//ends program if it can't open port
 	log.Fatal(http.ListenAndServe(":" + port, nil))
 }

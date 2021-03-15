@@ -1,6 +1,10 @@
 package api
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
 
 type Cases struct {
 	Country              string  `json:"country"`
@@ -11,13 +15,19 @@ type Cases struct {
 	PopulationPercentage float32 `json:"population_percentage"`
 }
 
-func (object *Cases) Handler(country string, startDate string, endDate string) {
-	err := object.get(country, startDate, endDate)
+func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
+	err := object.get("Norway", "2020-12-01", "2021-01-31")
 	//branch if there is an error
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		fmt.Println(object)
+	}
+	//set header to JSON
+	w.Header().Set("Content-Type", "application/json")
+	//send output to user
+	err = json.NewEncoder(w).Encode(object)
+	//branch if there is an error
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
