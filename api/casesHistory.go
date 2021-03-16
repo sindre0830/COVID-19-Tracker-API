@@ -10,7 +10,7 @@ type casesHistory struct {
 		Country           string 		 `json:"country"`
 		Population        int    		 `json:"population"`
 		SqKmArea          int    		 `json:"sq_km_area"`
-		LifeExpectancy    string 		 `json:"life_expectancy"`
+		LifeExpectancy    *interface{} 	 `json:"life_expectancy"`
 		ElevationInMeters int    		 `json:"elevation_in_meters"`
 		Continent         string 		 `json:"continent"`
 		Abbreviation      string 		 `json:"abbreviation"`
