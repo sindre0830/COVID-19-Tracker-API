@@ -79,3 +79,5 @@
 [1.0.1] setup: Initial commit of policyHistory structure
 
 [1.0.2] setup: Initial commit of policyCurrent structure
+
+[1.0.3] setup: Initial commit of countryCode structure
