@@ -6,6 +6,17 @@ import (
 	"strings"
 )
 
+func ValidateCountry(country string) error {
+	if country == "" {
+		err := errors.New("country validation: empty field")
+		return err
+	}
+	return nil
+}
+
+func ConvertCountry(country string) string {
+	return strings.Title(strings.ToLower(country))
+}
 // ValidateDates checks all possible date formatting mistakes.
 func ValidateDates(dates string) error {
 	//declare error variable

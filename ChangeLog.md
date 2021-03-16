@@ -49,3 +49,5 @@
 [0.16.0] development: Changed LifeExpectancy field to pointer of interface to deal with Italy edge-case
 
 [0.16.1] formatting: Fixed version mistake in the last three commits
+
+[0.17.0] development: Added functionality to convert country input to correct syntax and validating if it's empty

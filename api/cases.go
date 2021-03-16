@@ -32,7 +32,18 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.PrintErrorInformation(w)
 		return
 	}
-	country := arrURL[4]
+	country := fun.ConvertCountry(arrURL[4])
+	err := fun.ValidateCountry(country)
+	if err != nil {
+		debug.UpdateErrorMessage(
+			http.StatusInternalServerError, 
+			"Cases.Handler() -> ValidateCountry() -> Checking if inputted country is correct",
+			err.Error(),
+			"Country format. Expected format: '.../country...'. Example '.../Norway...'",
+		)
+		debug.PrintErrorInformation(w)
+		return
+	}
 	//set default scope to nil (total)
 	startDate := ""
 	endDate := ""
