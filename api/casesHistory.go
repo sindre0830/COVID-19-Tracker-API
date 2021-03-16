@@ -5,22 +5,6 @@ import (
 	"errors"
 )
 
-type casesHistory struct {
-	All struct {
-		Country           string 		 `json:"country"`
-		Population        int    		 `json:"population"`
-		SqKmArea          int    		 `json:"sq_km_area"`
-		LifeExpectancy    *interface{} 	 `json:"life_expectancy"`
-		ElevationInMeters int    		 `json:"elevation_in_meters"`
-		Continent         string 		 `json:"continent"`
-		Abbreviation      string 		 `json:"abbreviation"`
-		Location          string 		 `json:"location"`
-		Iso               int    		 `json:"iso"`
-		CapitalCity       string 		 `json:"capital_city"`
-		Dates 		      map[string]int `json:"dates"`
-	} `json:"All"`
-}
-
 func (object *casesHistory) addCases(startDate string, endDate string) int {
 	n:= object.All.Dates[endDate] - object.All.Dates[startDate]
 	if n < 0 {
