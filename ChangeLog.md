@@ -55,3 +55,5 @@
 [0.17.1] formatting: Split structure files into struct-header and struct-functionality files for readability
 
 [0.17.2] formatting: Split structure files into struct-header and struct-functionality files for readability
+
+[0.18.0] development: Changed status code from internal server error to bad request after checking ValidateCountry

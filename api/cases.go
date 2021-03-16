@@ -27,7 +27,7 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	err := fun.ValidateCountry(country)
 	if err != nil {
 		debug.UpdateErrorMessage(
-			http.StatusInternalServerError, 
+			http.StatusBadRequest, 
 			"Cases.Handler() -> ValidateCountry() -> Checking if inputted country is correct",
 			err.Error(),
 			"Country format. Expected format: '.../country...'. Example '.../Norway...'",
