@@ -71,3 +71,7 @@
 [0.22.0] development: Added function to handle URL parsing
 
 [0.23.0] development: Fixed Cases handler after last commit
+
+**Milestone Reached:** Cases endpoint has been implement
+
+[1.0.0] setup: Initial commit of policy structure
