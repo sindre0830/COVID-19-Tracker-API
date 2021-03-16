@@ -28,7 +28,7 @@ func requestData(url string) ([]byte, int, error) {
 	output, err := ioutil.ReadAll(res.Body)
 	//branch if there is an error
 	if err != nil {
-		return nil, 0, err
+		return nil, http.StatusInternalServerError, err
 	}
-	return output, 0, nil
+	return output, http.StatusOK, nil
 }

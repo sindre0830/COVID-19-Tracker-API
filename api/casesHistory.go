@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
 )
 
 func (object *casesHistory) get(country string, startDate string, endDate string) (int, int, int, error) {
@@ -16,7 +17,7 @@ func (object *casesHistory) get(country string, startDate string, endDate string
 	//branch if object is empty
 	if object.isEmpty() {
 		err = errors.New("object validation: object is empty")
-		return 0, 0, 0, err
+		return 0, 0, http.StatusBadRequest, err
 	}
 	confirmed := object.addCases(startDate, endDate)
 	//url to API with recovered cases
@@ -27,7 +28,7 @@ func (object *casesHistory) get(country string, startDate string, endDate string
 		return 0, 0, status, err
 	}
 	recovered := object.addCases(startDate, endDate)
-	return confirmed, recovered, 0, nil
+	return confirmed, recovered, http.StatusOK, nil
 }
 
 func (object *casesHistory) isEmpty() bool {
@@ -51,5 +52,9 @@ func (object *casesHistory) req(url string) (int, error) {
 	}
 	//convert raw output to JSON
 	err = json.Unmarshal(output, &object)
-	return 0, err
+	//branch if there is an error
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
 }

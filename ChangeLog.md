@@ -61,3 +61,5 @@
 [0.19.0] testing: Added cases handler testing
 
 [0.20.0] development: Added proper error handling if service timesout
+
+[0.21.0] development: Added more status handling when getting cases

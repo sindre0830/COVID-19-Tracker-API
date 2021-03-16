@@ -88,8 +88,7 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//branch if there is an error
 	if err != nil {
 		reason := "Unknown"
-		if status == 0 {
-			status = http.StatusBadRequest
+		if status == http.StatusBadRequest {
 			reason = "Country format. Either country doesn't exist in our database or it's mistyped"
 		}
 		debug.UpdateErrorMessage(
@@ -131,7 +130,7 @@ func (object *Cases) get(country string, startDate string, endDate string) (int,
 			return status, err
 		}
 	}
-	return 0, nil
+	return http.StatusOK, nil
 }
 
 func (object *Cases) getTotal(country string) (int, error) {
@@ -147,7 +146,7 @@ func (object *Cases) getTotal(country string) (int, error) {
 	object.Confirmed = data.All.Confirmed
 	object.Recovered = data.All.Recovered
 	object.PopulationPercentage = 0.00
-	return 0, nil
+	return http.StatusOK, nil
 }
 
 func (object *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
@@ -163,5 +162,5 @@ func (object *Cases) getHistory(country string, startDate string, endDate string
 	object.Confirmed = confirmed
 	object.Recovered = recovered
 	object.PopulationPercentage = 0.00
-	return 0, nil
+	return http.StatusOK, nil
 }

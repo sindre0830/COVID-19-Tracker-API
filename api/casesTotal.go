@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
 )
 
 func (object *casesTotal) get(country string) (int, error) {
@@ -15,9 +16,9 @@ func (object *casesTotal) get(country string) (int, error) {
 	//branch if object is empty
 	if object.isEmpty() {
 		err = errors.New("object validation: object is empty")
-		return 0, err
+		return http.StatusBadRequest, err
 	}
-	return 0, nil
+	return http.StatusOK, nil
 }
 
 func (object *casesTotal) req(url string) (int, error) {
@@ -29,7 +30,11 @@ func (object *casesTotal) req(url string) (int, error) {
 	}
 	//convert raw output to JSON
 	err = json.Unmarshal(output, &object)
-	return 0, err
+	//branch if there is an error
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
 }
 
 func (object *casesTotal) isEmpty() bool {
