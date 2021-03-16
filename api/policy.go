@@ -6,12 +6,12 @@ import "net/http"
 func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 
 }
-// get will update Cases based on input.
+// get will update Policy based on input.
 func (policy *Policy) get(country string, startDate string, endDate string) (int, error) {
 	return http.StatusOK, nil
 }
-// getTotal will get all available COVID policies.
-func (policy *Policy) getTotal(country string) (int, error) {
+// getCurrent will get current available COVID policies.
+func (policy *Policy) getCurrent(country string) (int, error) {
 	return http.StatusOK, nil
 }
 // getHistory will get COVID policies between two dates.

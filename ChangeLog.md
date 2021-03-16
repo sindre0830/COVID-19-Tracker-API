@@ -75,3 +75,5 @@
 **Milestone Reached:** Cases endpoint has been implement
 
 [1.0.0] setup: Initial commit of policy structure
+
+[1.0.1] setup: Initial commit of policyHistory structure
