@@ -59,3 +59,5 @@
 [0.18.0] development: Changed status code from internal server error to bad request after checking ValidateCountry
 
 [0.19.0] testing: Added cases handler testing
+
+[0.20.0] development: Added proper error handling if service timesout

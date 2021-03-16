@@ -5,28 +5,31 @@ import (
 	"errors"
 )
 
-func (object *casesTotal) get(country string) error {
+func (object *casesTotal) get(country string) (int, error) {
 	//url to API
 	url := "https://covid-api.mmediagroup.fr/v1/cases?country=" + country
-	err := object.req(url)
+	status, err := object.req(url)
+	if err != nil {
+		return status, err
+	}
 	//branch if object is empty
 	if object.isEmpty() {
-		err = errors.New("object validation: object is empty, either country is mistyped or doesn't exist in our database")
-		return err
+		err = errors.New("object validation: object is empty")
+		return 0, err
 	}
-	return err
+	return 0, nil
 }
 
-func (object *casesTotal) req(url string) error {
+func (object *casesTotal) req(url string) (int, error) {
 	//gets raw output from API
-	output, err := requestData(url)
+	output, status, err := requestData(url)
 	//branch if there is an error
 	if err != nil {
-		return err
+		return status, err
 	}
 	//convert raw output to JSON
 	err = json.Unmarshal(output, &object)
-	return err
+	return 0, err
 }
 
 func (object *casesTotal) isEmpty() bool {

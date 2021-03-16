@@ -84,14 +84,19 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	//get data based on country and scope
-	err = object.get(country, startDate, endDate)
+	status, err := object.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
+		reason := "Unknown"
+		if status == 0 {
+			status = http.StatusBadRequest
+			reason = "Country format. Either country doesn't exist in our database or it's mistyped"
+		}
 		debug.UpdateErrorMessage(
-			http.StatusInternalServerError, 
+			status, 
 			"Cases.Handler() -> Cases.get() -> Getting covid cases data",
 			err.Error(),
-			"Unknown",
+			reason,
 		)
 		debug.PrintErrorInformation(w)
 		return
@@ -112,29 +117,29 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (object *Cases) get(country string, startDate string, endDate string) error {
+func (object *Cases) get(country string, startDate string, endDate string) (int, error) {
 	if startDate == "" {
-		err := object.getTotal(country)
+		status, err := object.getTotal(country)
 		//branch if there is an error
 		if err != nil {
-			return err
+			return status, err
 		}
 	} else {
-		err := object.getHistory(country, startDate, endDate)
+		status, err := object.getHistory(country, startDate, endDate)
 		//branch if there is an error
 		if err != nil {
-			return err
+			return status, err
 		}
 	}
-	return nil
+	return 0, nil
 }
 
-func (object *Cases) getTotal(country string) error {
+func (object *Cases) getTotal(country string) (int, error) {
 	var data casesTotal
-	err := data.get(country)
+	status, err := data.get(country)
 	//branch if there is an error
 	if err != nil {
-		return err
+		return status, err
 	}
 	object.Country = data.All.Country
 	object.Continent = data.All.Continent
@@ -142,15 +147,15 @@ func (object *Cases) getTotal(country string) error {
 	object.Confirmed = data.All.Confirmed
 	object.Recovered = data.All.Recovered
 	object.PopulationPercentage = 0.00
-	return nil
+	return 0, nil
 }
 
-func (object *Cases) getHistory(country string, startDate string, endDate string) error {
+func (object *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
 	var data casesHistory
-	confirmed, recovered, err := data.get(country, startDate, endDate)
+	confirmed, recovered, status, err := data.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
-		return err
+		return status, err
 	}
 	object.Country = data.All.Country
 	object.Continent = data.All.Continent
@@ -158,5 +163,5 @@ func (object *Cases) getHistory(country string, startDate string, endDate string
 	object.Confirmed = confirmed
 	object.Recovered = recovered
 	object.PopulationPercentage = 0.00
-	return nil
+	return 0, nil
 }
