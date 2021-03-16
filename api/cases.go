@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// Handler will handle http request.
+// Handler will handle http request for COVID cases.
 func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//parse url and branch if an error occurred
 	country, scope, status, err := fun.ParseURL(r.URL)
@@ -34,22 +34,24 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.PrintErrorInformation(w)
 		return
 	}
-	//validate scope and branch if an error occurred
-	err = fun.ValidateDates(scope)
-	if err != nil {
-		debug.UpdateErrorMessage(
-			http.StatusBadRequest, 
-			"Cases.Handler() -> Checking if inputed dates are valid",
-			err.Error(),
-			"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?2020-01-20-2021-02-01'",
-		)
-		debug.PrintErrorInformation(w)
-		return
-	}
-	//set start- and end date variables
+	//convert to required syntax
+	country = fun.ConvertCountry(country)
+	//set default start- and end date variables (total) and check if user inputted scope
 	startDate := ""
 	endDate := ""
 	if len(scope) > 0 {
+		//validate scope and branch if an error occurred
+		err = fun.ValidateDates(scope)
+		if err != nil {
+			debug.UpdateErrorMessage(
+				http.StatusBadRequest, 
+				"Cases.Handler() -> Checking if inputed dates are valid",
+				err.Error(),
+				"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?2020-01-20-2021-02-01'",
+			)
+			debug.PrintErrorInformation(w)
+			return
+		}
 		startDate = scope[:10]
 		endDate = scope[11:]
 	}

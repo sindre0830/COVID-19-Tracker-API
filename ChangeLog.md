@@ -69,3 +69,5 @@
 [0.21.2] formatting: Modified reciever names to be more descriptive
 
 [0.22.0] development: Added function to handle URL parsing
+
+[0.23.0] development: Fixed Cases handler after last commit
