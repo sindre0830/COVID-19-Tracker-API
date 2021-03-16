@@ -112,6 +112,23 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (object *Cases) get(country string, startDate string, endDate string) error {
+	if startDate == "" {
+		err := object.getTotal(country)
+		//branch if there is an error
+		if err != nil {
+			return err
+		}
+	} else {
+		err := object.getHistory(country, startDate, endDate)
+		//branch if there is an error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (object *Cases) getTotal(country string) error {
 	var data casesTotal
 	err := data.get(country)
@@ -141,22 +158,5 @@ func (object *Cases) getHistory(country string, startDate string, endDate string
 	object.Confirmed = confirmed
 	object.Recovered = recovered
 	object.PopulationPercentage = 0.00
-	return nil
-}
-
-func (object *Cases) get(country string, startDate string, endDate string) error {
-	if startDate == "" {
-		err := object.getTotal(country)
-		//branch if there is an error
-		if err != nil {
-			return err
-		}
-	} else {
-		err := object.getHistory(country, startDate, endDate)
-		//branch if there is an error
-		if err != nil {
-			return err
-		}
-	}
 	return nil
 }

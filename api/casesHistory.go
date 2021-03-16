@@ -5,14 +5,6 @@ import (
 	"errors"
 )
 
-func (object *casesHistory) addCases(startDate string, endDate string) int {
-	n:= object.All.Dates[endDate] - object.All.Dates[startDate]
-	if n < 0 {
-		n *= (-1)
-	}
-	return n
-}
-
 func (object *casesHistory) get(country string, startDate string, endDate string) (int, int, error) {
 	//url to API with confirmed cases
 	url := "https://covid-api.mmediagroup.fr/v1/history?country=" + country + "&status=Confirmed"
@@ -38,6 +30,18 @@ func (object *casesHistory) get(country string, startDate string, endDate string
 	return confirmed, recovered, nil
 }
 
+func (object *casesHistory) isEmpty() bool {
+    return object.All.Country == ""
+}
+
+func (object *casesHistory) addCases(startDate string, endDate string) int {
+	n:= object.All.Dates[endDate] - object.All.Dates[startDate]
+	if n < 0 {
+		n *= (-1)
+	}
+	return n
+}
+
 func (object *casesHistory) req(url string) error {
 	//gets raw output from API
 	output, err := requestData(url)
@@ -48,8 +52,4 @@ func (object *casesHistory) req(url string) error {
 	//convert raw output to JSON
 	err = json.Unmarshal(output, &object)
 	return err
-}
-
-func (object *casesHistory) isEmpty() bool {
-    return object.All.Country == ""
 }

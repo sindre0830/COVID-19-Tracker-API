@@ -53,3 +53,5 @@
 [0.17.0] development: Added functionality to convert country input to correct syntax and validating if it's empty
 
 [0.17.1] formatting: Split structure files into struct-header and struct-functionality files for readability
+
+[0.17.2] formatting: Split structure files into struct-header and struct-functionality files for readability
