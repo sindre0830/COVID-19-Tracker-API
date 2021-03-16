@@ -1,5 +1,8 @@
 package api
 
+// casesTotal stores all data about COVID cases.
+//
+// Functionality: get, req, isEmpty
 type casesTotal struct {
 	All struct {
 		Confirmed         int          `json:"confirmed"`

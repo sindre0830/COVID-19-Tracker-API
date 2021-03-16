@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"main/debug"
 	"main/fun"
+	"math"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
+// Handler will handle http request.
 func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//split URL path by '/'
 	arrURL := strings.Split(r.URL.Path, "/")
@@ -115,52 +117,55 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.PrintErrorInformation(w)
 	}
 }
-
+// get will update object based on input.
 func (object *Cases) get(country string, startDate string, endDate string) (int, error) {
+	//branch if scope parameter is used
 	if startDate == "" {
+		//get all available data and branch if an error occurred
 		status, err := object.getTotal(country)
-		//branch if there is an error
 		if err != nil {
 			return status, err
 		}
 	} else {
+		//get data between two dates and branch if an error occurred
 		status, err := object.getHistory(country, startDate, endDate)
-		//branch if there is an error
 		if err != nil {
 			return status, err
 		}
 	}
 	return http.StatusOK, nil
 }
-
+// getTotal will get all available data.
 func (object *Cases) getTotal(country string) (int, error) {
 	var data casesTotal
+	//get total cases and branch if an error occurred
 	status, err := data.get(country)
-	//branch if there is an error
 	if err != nil {
 		return status, err
 	}
-	object.Country = data.All.Country
-	object.Continent = data.All.Continent
-	object.Scope = "total"
-	object.Confirmed = data.All.Confirmed
-	object.Recovered = data.All.Recovered
-	object.PopulationPercentage = 0.00
+	//set data in object
+	object.update(data.All.Country, data.All.Continent, "total", data.All.Confirmed, data.All.Recovered, data.All.Population)
 	return http.StatusOK, nil
 }
-
+// getHistory will get data between two dates.
 func (object *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
 	var data casesHistory
+	//get cases between two dates and branch if an error occurred
 	confirmed, recovered, status, err := data.get(country, startDate, endDate)
-	//branch if there is an error
 	if err != nil {
 		return status, err
 	}
-	object.Country = data.All.Country
-	object.Continent = data.All.Continent
-	object.Scope = startDate + "-" + endDate
+	//set data in object
+	object.update(data.All.Country, data.All.Continent, startDate + "-" + endDate, confirmed, recovered, data.All.Population)
+	return http.StatusOK, nil
+}
+// update sets new data in object.
+func (object *Cases) update(country string, continent string, scope string, confirmed int, recovered int, population int) {
+	object.Country = country
+	object.Continent = continent
+	object.Scope = scope
 	object.Confirmed = confirmed
 	object.Recovered = recovered
-	object.PopulationPercentage = 0.00
-	return http.StatusOK, nil
+	//https://yourbasic.org/golang/round-float-2-decimal-places/#float-to-float
+	object.PopulationPercentage = (math.Round((float64(confirmed) / float64(population)) * 100) / 100)
 }

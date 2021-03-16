@@ -6,11 +6,10 @@ import (
 	"time"
 )
 
-// requestData gets raw data from API's
+// requestData gets raw data from REST services based on URL.
 func requestData(url string) ([]byte, int, error) {
-	//create new request
+	//create new request and branch if an error occurred
 	req, err := http.NewRequest(http.MethodGet, url, nil)
-	//branch if there is an error
 	if err != nil {
 		return nil, req.Response.StatusCode, err
 	}
@@ -18,15 +17,13 @@ func requestData(url string) ([]byte, int, error) {
 	apiClient := http.Client{
 		Timeout: time.Second * 2,
 	}
-	//get response
+	//get response and branch if an error occurred
 	res, err := apiClient.Do(req)
-	//branch if there is an error
 	if err != nil {
 		return nil, res.StatusCode, err
 	}
-	//read output
+	//read output and branch if an error occurred
 	output, err := ioutil.ReadAll(res.Body)
-	//branch if there is an error
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}

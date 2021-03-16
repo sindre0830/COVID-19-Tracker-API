@@ -1,5 +1,8 @@
 package api
 
+// casesHistory stores historcial data about COVID cases.
+//
+// Functionality: get, req, isEmpty, addCases
 type casesHistory struct {
 	All struct {
 		Country           string         `json:"country"`

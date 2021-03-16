@@ -63,3 +63,5 @@
 [0.20.0] development: Added proper error handling if service timesout
 
 [0.21.0] development: Added more status handling when getting cases
+
+[0.21.1] formatting: Added comments and headers
