@@ -2,10 +2,43 @@ package fun
 
 import (
 	"errors"
+	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
 
+// ParseURL parses URL to country and possible scope.
+func ParseURL(inpURL *url.URL) (string, string, int, error) {
+	//split URL path by '/'
+	arrPath := strings.Split(inpURL.Path, "/")
+	//branch if there aren't enough elements in URL and return error
+	if len(arrPath) != 5 {
+		err := errors.New("url validation: either too many or too few arguments in url path")
+		return "", "", http.StatusBadRequest, err
+	}
+	//set country
+	country := arrPath[4]
+	//set default scope to nil (total)
+	scope := ""
+	//get all parameters from URL and branch if an error occurred
+	arrParam, err := url.ParseQuery(inpURL.RawQuery)
+	if err != nil {
+		return "", "", http.StatusInternalServerError, err
+	}
+	//branch if any parameters exist
+	if len(arrParam) > 0 {
+		//branch if field 'scope' exist otherwise return an error
+		if targetParameter, ok := arrParam["scope"]; ok {
+			scope = targetParameter[0]
+		} else {
+			err := errors.New("url validation: wrong parameter")
+			return "", "", http.StatusBadRequest, err
+		}
+	}
+	return country, scope, http.StatusOK, nil
+}
+// ValidateCountry checks if country is empty.
 func ValidateCountry(country string) error {
 	if country == "" {
 		err := errors.New("country validation: empty field")
@@ -13,7 +46,7 @@ func ValidateCountry(country string) error {
 	}
 	return nil
 }
-
+// ConvertCountry converts any inputted name to uphold strict syntax.
 func ConvertCountry(country string) string {
 	return strings.Title(strings.ToLower(country))
 }

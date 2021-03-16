@@ -67,3 +67,5 @@
 [0.21.1] formatting: Added comments and headers
 
 [0.21.2] formatting: Modified reciever names to be more descriptive
+
+[0.22.0] development: Added function to handle URL parsing
