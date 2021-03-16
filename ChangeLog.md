@@ -42,9 +42,10 @@
 
 [0.13.0] development: Added URL parsing in cases
 
-[0.11.0] development: Added proper error handling when getting cases and outputting to user
+[0.14.0] development: Added proper error handling when getting cases and outputting to user
 
-[0.12.0] development: Added error handling if object is empty
+[0.15.0] development: Added error handling if object is empty
 
-[0.13.0] development: Changed LifeExpectancy field to pointer of interface to deal with Italy edge-case
+[0.16.0] development: Changed LifeExpectancy field to pointer of interface to deal with Italy edge-case
 
+[0.16.1] formatting: Fixed version mistake in the last three commits
