@@ -11,7 +11,7 @@ import (
 )
 
 // Handler will handle http request.
-func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
+func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//split URL path by '/'
 	arrURL := strings.Split(r.URL.Path, "/")
 	//branch if there is an error
@@ -86,7 +86,7 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	//get data based on country and scope
-	status, err := object.get(country, startDate, endDate)
+	status, err := cases.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
 		reason := "Unknown"
@@ -105,7 +105,7 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//set header to JSON
 	w.Header().Set("Content-Type", "application/json")
 	//send output to user
-	err = json.NewEncoder(w).Encode(object)
+	err = json.NewEncoder(w).Encode(cases)
 	//branch if something went wrong with output
 	if err != nil {
 		debug.UpdateErrorMessage(
@@ -117,18 +117,18 @@ func (object *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.PrintErrorInformation(w)
 	}
 }
-// get will update object based on input.
-func (object *Cases) get(country string, startDate string, endDate string) (int, error) {
+// get will update Cases based on input.
+func (cases *Cases) get(country string, startDate string, endDate string) (int, error) {
 	//branch if scope parameter is used
 	if startDate == "" {
 		//get all available data and branch if an error occurred
-		status, err := object.getTotal(country)
+		status, err := cases.getTotal(country)
 		if err != nil {
 			return status, err
 		}
 	} else {
 		//get data between two dates and branch if an error occurred
-		status, err := object.getHistory(country, startDate, endDate)
+		status, err := cases.getHistory(country, startDate, endDate)
 		if err != nil {
 			return status, err
 		}
@@ -136,36 +136,36 @@ func (object *Cases) get(country string, startDate string, endDate string) (int,
 	return http.StatusOK, nil
 }
 // getTotal will get all available data.
-func (object *Cases) getTotal(country string) (int, error) {
+func (cases *Cases) getTotal(country string) (int, error) {
 	var data casesTotal
 	//get total cases and branch if an error occurred
 	status, err := data.get(country)
 	if err != nil {
 		return status, err
 	}
-	//set data in object
-	object.update(data.All.Country, data.All.Continent, "total", data.All.Confirmed, data.All.Recovered, data.All.Population)
+	//set data in cases
+	cases.update(data.All.Country, data.All.Continent, "total", data.All.Confirmed, data.All.Recovered, data.All.Population)
 	return http.StatusOK, nil
 }
 // getHistory will get data between two dates.
-func (object *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
+func (cases *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
 	var data casesHistory
 	//get cases between two dates and branch if an error occurred
 	confirmed, recovered, status, err := data.get(country, startDate, endDate)
 	if err != nil {
 		return status, err
 	}
-	//set data in object
-	object.update(data.All.Country, data.All.Continent, startDate + "-" + endDate, confirmed, recovered, data.All.Population)
+	//set data in cases
+	cases.update(data.All.Country, data.All.Continent, startDate + "-" + endDate, confirmed, recovered, data.All.Population)
 	return http.StatusOK, nil
 }
-// update sets new data in object.
-func (object *Cases) update(country string, continent string, scope string, confirmed int, recovered int, population int) {
-	object.Country = country
-	object.Continent = continent
-	object.Scope = scope
-	object.Confirmed = confirmed
-	object.Recovered = recovered
+// update sets new data in cases.
+func (cases *Cases) update(country string, continent string, scope string, confirmed int, recovered int, population int) {
+	cases.Country = country
+	cases.Continent = continent
+	cases.Scope = scope
+	cases.Confirmed = confirmed
+	cases.Recovered = recovered
 	//https://yourbasic.org/golang/round-float-2-decimal-places/#float-to-float
-	object.PopulationPercentage = (math.Round((float64(confirmed) / float64(population)) * 100) / 100)
+	cases.PopulationPercentage = (math.Round((float64(confirmed) / float64(population)) * 100) / 100)
 }

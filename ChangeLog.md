@@ -65,3 +65,5 @@
 [0.21.0] development: Added more status handling when getting cases
 
 [0.21.1] formatting: Added comments and headers
+
+[0.21.2] formatting: Modified reciever names to be more descriptive
