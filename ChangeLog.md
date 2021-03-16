@@ -77,3 +77,5 @@
 [1.0.0] setup: Initial commit of policy structure
 
 [1.0.1] setup: Initial commit of policyHistory structure
+
+[1.0.2] setup: Initial commit of policyCurrent structure
