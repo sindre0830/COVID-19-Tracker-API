@@ -83,3 +83,5 @@
 [1.0.3] setup: Initial commit of countryCode structure
 
 [1.1.0] development: Added status code check in requestData to return statuscode even if no errors are thrown
+
+[1.2.0] development: Renamed countryCode structure to CountryNameDetails and added get, req and testing
