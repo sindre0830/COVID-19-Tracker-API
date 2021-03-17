@@ -9,7 +9,7 @@ import (
 
 // PolicyHistory stores data about COVID policies for all countries between two dates.
 //
-// Functionality: Get, req, isEmpty
+// Functionality: Get, req, isEmpty, decreaseDate
 type PolicyHistory struct {
 	Scale     map[string]map[string]int `json:"scale"`
 	Countries []string                  `json:"countries"`
@@ -26,6 +26,7 @@ type PolicyHistory struct {
 }
 // get will update PolicyHistory based on input.
 func (policyHistory *PolicyHistory) Get(country string, startDate string, endDate string) (int, error) {
+	//decreases both dates by 10 days since the API data is 10 days late and branch if an error occurred
 	startDate, err := policyHistory.decreaseDate(startDate)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -65,12 +66,14 @@ func (policyHistory *PolicyHistory) req(url string) (int, error) {
 func (policyHistory *PolicyHistory) isEmpty() bool {
     return policyHistory.Scale == nil
 }
-
+// decreaseDate decreases the date by 10 days.
 func (policyHistory *PolicyHistory) decreaseDate(date string) (string, error) {
+	//parse date to time format and branch if an error occurred
 	dateTime, err := time.Parse("2006-01-02", date)
 	if err != nil {
 		return "", err
 	}
+	//decrase date by 10 days and parse back to string
 	dateTime = dateTime.AddDate(0, 0, -10)
 	date = dateTime.Format("2006-01-02")
 	return date, nil

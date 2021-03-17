@@ -95,3 +95,5 @@
 [1.5.1] formatting: Moved structures to the same file as their functions
 
 [1.6.0] development: Added decreaseTime function in PolicyHistory
+
+[1.6.1] formatting: Added comments in decreaseTime
