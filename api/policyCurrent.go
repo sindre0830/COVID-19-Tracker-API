@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -39,7 +38,6 @@ func (policyCurrent *PolicyCurrent) Get(country string) (string, int, error) {
 	currentTime := time.Now()
 	pastTime := currentTime.AddDate(0, 0, -10)
 	date := pastTime.Format("2006-01-02")
-	fmt.Println(date)
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/actions/" + country + "/" + date
 	//gets json output from API and branch if an error occurred
 	status, err := policyCurrent.req(url)

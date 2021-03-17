@@ -17,8 +17,10 @@ func main() {
 	}
 	//declare structures with handlers
 	var cases api.Cases
+	var policy api.Policy
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.Handler)
+	http.HandleFunc("/corona/v1/policy/", policy.Handler)
 	//ends program if it can't open port
 	log.Fatal(http.ListenAndServe(":" + port, nil))
 }

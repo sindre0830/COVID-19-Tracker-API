@@ -107,3 +107,5 @@
 [1.10.0] development: Added getCurrent and update in Policy structure
 
 [1.11.0] development: Added getHistory in Policy structure
+
+[1.12.0] development: Added early version of Policy Handler
