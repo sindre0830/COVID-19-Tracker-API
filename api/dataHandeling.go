@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -20,6 +21,10 @@ func requestData(url string) ([]byte, int, error) {
 	//get response and branch if an error occurred
 	res, err := apiClient.Do(req)
 	if err != nil {
+		return nil, res.StatusCode, err
+	}
+	if res.StatusCode != http.StatusOK {
+		err = errors.New("requesting data: status code is not OK")
 		return nil, res.StatusCode, err
 	}
 	//read output and branch if an error occurred

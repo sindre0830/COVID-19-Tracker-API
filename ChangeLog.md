@@ -81,3 +81,5 @@
 [1.0.2] setup: Initial commit of policyCurrent structure
 
 [1.0.3] setup: Initial commit of countryCode structure
+
+[1.1.0] development: Added status code check in requestData to return statuscode even if no errors are thrown
