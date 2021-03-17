@@ -87,3 +87,5 @@
 [1.2.0] development: Renamed countryCode structure to CountryNameDetails and added get, req and testing
 
 [1.3.0] development: Added Get, req, isEmpty and testing to PolicyCurrent
+
+[1.4.0] development: Increased timeout variable to 4 seconds since some REST services are slow

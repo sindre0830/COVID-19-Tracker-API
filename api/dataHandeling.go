@@ -16,7 +16,7 @@ func requestData(url string) ([]byte, int, error) {
 	}
 	//timeout after 2 seconds
 	apiClient := http.Client{
-		Timeout: time.Second * 2,
+		Timeout: time.Second * 4,
 	}
 	//get response and branch if an error occurred
 	res, err := apiClient.Do(req)
