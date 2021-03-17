@@ -18,7 +18,7 @@ func Test_PolicyHistory_Get(t *testing.T) {
 	//iterate through map and check each key to expected element
 	for arrTestData, expectedStatus := range data {
 		var policyHistory api.PolicyHistory
-		status, _ := policyHistory.Get(arrTestData[0], arrTestData[1], arrTestData[2])
+		_, status, _ := policyHistory.Get(arrTestData[0], arrTestData[1], arrTestData[2])
 		//branch if we get an unexpected answer
 		if status != expectedStatus {
 			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, arrTestData)
@@ -27,7 +27,6 @@ func Test_PolicyHistory_Get(t *testing.T) {
 }
 
 func Test_PolicyCurrent_Get(t *testing.T) {
-	var policyCurrent api.PolicyCurrent
 	//store expected data to check against
 	data := map[string]int {
 		"": http.StatusNotFound,
@@ -36,6 +35,7 @@ func Test_PolicyCurrent_Get(t *testing.T) {
 	}
 	//iterate through map and check each key to expected element
 	for country, expectedStatus := range data {
+		var policyCurrent api.PolicyCurrent
 		_, status, _ := policyCurrent.Get(country)
 		//branch if we get an unexpected answer
 		if status != expectedStatus {
@@ -45,7 +45,6 @@ func Test_PolicyCurrent_Get(t *testing.T) {
 }
 
 func Test_CountryNameDetails_Get(t *testing.T) {
-	var countryNameDetails api.CountryNameDetails
 	//store expected data to check against
 	data := map[string]int {
 		"": http.StatusNotFound,
@@ -54,6 +53,7 @@ func Test_CountryNameDetails_Get(t *testing.T) {
 	}
 	//iterate through map and check each key to expected element
 	for country, expectedStatus := range data {
+		var countryNameDetails api.CountryNameDetails
 		status, _ := countryNameDetails.Get(country)
 		//branch if we get an unexpected answer
 		if status != expectedStatus {
@@ -63,7 +63,6 @@ func Test_CountryNameDetails_Get(t *testing.T) {
 }
 
 func Test_casesHandler(t *testing.T) {
-	var cases api.Cases
 	//store expected data to check against
 	data := map[string]int {
 		//test path
@@ -83,6 +82,7 @@ func Test_casesHandler(t *testing.T) {
 	}
 	//iterate through map and check each key to expected element
 	for url, expectedStatus := range data {
+		var cases api.Cases
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			fmt.Println("Error creating HTTP request in Test_casesHandler")
