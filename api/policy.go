@@ -18,6 +18,20 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 }
 // get will update Policy based on input.
 func (policy *Policy) get(country string, startDate string, endDate string) (int, error) {
+	//branch if scope parameter is used
+	if startDate == "" {
+		//get all available data and branch if an error occurred
+		status, err := policy.getCurrent(country)
+		if err != nil {
+			return status, err
+		}
+	} else {
+		//get data between two dates and branch if an error occurred
+		status, err := policy.getHistory(country, startDate, endDate)
+		if err != nil {
+			return status, err
+		}
+	}
 	return http.StatusOK, nil
 }
 // getCurrent will get current available COVID policies.
