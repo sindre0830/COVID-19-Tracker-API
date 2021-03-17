@@ -1,9 +1,9 @@
 package api
 
-// policyHistory stores data about COVID policies for all countries between two dates.
+// PolicyHistory stores data about COVID policies for all countries between two dates.
 //
-// Functionality: get, req
-type policyHistory struct {
+// Functionality: Get, req
+type PolicyHistory struct {
 	Scale     map[string]map[string]int `json:"scale"`
 	Countries []string                  `json:"countries"`
 	Data      map[string]map[string]struct {

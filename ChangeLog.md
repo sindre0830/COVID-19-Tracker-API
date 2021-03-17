@@ -89,3 +89,5 @@
 [1.3.0] development: Added Get, req, isEmpty and testing to PolicyCurrent
 
 [1.4.0] development: Increased timeout variable to 4 seconds since some REST services are slow
+
+[1.4.0] development: Added Get, req, isEmpty and testing to PolicyHistory

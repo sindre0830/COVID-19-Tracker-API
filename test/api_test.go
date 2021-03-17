@@ -8,6 +8,24 @@ import (
 	"testing"
 )
 
+func Test_PolicyHistory_Get(t *testing.T) {
+	//store expected data to check against
+	data := map[[3]string]int {
+		{"nor", "2021-01-01", "2021-03-01"}: http.StatusOK,
+		{"nor", "2022-01-01", "2022-03-01"}: http.StatusNotFound,
+		{"nor", "2016-01-01", "2016-03-01"}: http.StatusNotFound,
+	}
+	//iterate through map and check each key to expected element
+	for arrTestData, expectedStatus := range data {
+		var policyHistory api.PolicyHistory
+		status, _ := policyHistory.Get(arrTestData[0], arrTestData[1], arrTestData[2])
+		//branch if we get an unexpected answer
+		if status != expectedStatus {
+			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, arrTestData)
+		}
+	}
+}
+
 func Test_PolicyCurrent_Get(t *testing.T) {
 	var policyCurrent api.PolicyCurrent
 	//store expected data to check against
