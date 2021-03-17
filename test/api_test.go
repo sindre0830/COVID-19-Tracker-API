@@ -8,6 +8,24 @@ import (
 	"testing"
 )
 
+func Test_PolicyCurrent_Get(t *testing.T) {
+	var policyCurrent api.PolicyCurrent
+	//store expected data to check against
+	data := map[string]int {
+		"": http.StatusNotFound,
+		"norway": http.StatusNotFound,
+		"nor": http.StatusOK,
+	}
+	//iterate through map and check each key to expected element
+	for country, expectedStatus := range data {
+		_, status, _ := policyCurrent.Get(country)
+		//branch if we get an unexpected answer
+		if status != expectedStatus {
+			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'", expectedStatus, status, country)
+		}
+	}
+}
+
 func Test_CountryNameDetails_Get(t *testing.T) {
 	var countryNameDetails api.CountryNameDetails
 	//store expected data to check against
