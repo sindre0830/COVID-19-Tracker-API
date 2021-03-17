@@ -36,6 +36,14 @@ func (policy *Policy) get(country string, startDate string, endDate string) (int
 }
 // getCurrent will get current available COVID policies.
 func (policy *Policy) getCurrent(country string) (int, error) {
+	var data PolicyCurrent
+	//get total cases and branch if an error occurred
+	updated, status, err := data.Get(country)
+	if err != nil {
+		return status, err
+	}
+	//set data in cases
+	policy.update(country, "total", data.Stringencydata.Stringency, 0, updated)
 	return http.StatusOK, nil
 }
 // getHistory will get COVID policies between two dates.
@@ -43,6 +51,10 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 	return http.StatusOK, nil
 }
 // update sets new data in cases.
-func (policy *Policy) update(country string, scope string, stringency float64, trend float64, Update string) {
-
+func (policy *Policy) update(country string, scope string, stringency float64, trend float64, update string) {
+	policy.Country = country
+	policy.Scope = scope
+	policy.Stringency = stringency
+	policy.Trend = trend
+	policy.Update = update
 }

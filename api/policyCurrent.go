@@ -29,12 +29,12 @@ type PolicyCurrent struct {
 		Confirmed        *interface{} `json:"confirmed"`
 		Deaths           *interface{} `json:"deaths"`
 		StringencyActual *interface{} `json:"stringency_actual"`
-		Stringency       *interface{} `json:"stringency"`
+		Stringency       float64 `json:"stringency"`
 		Msg              *interface{} `json:"msg"`
 	} `json:"stringencyData"`
 }
 // get will update PolicyCurrent based on input.
-func (policyCurrent *PolicyCurrent) Get(country string) (time.Time, int, error) {
+func (policyCurrent *PolicyCurrent) Get(country string) (string, int, error) {
 	//get current time in YYYY-MM-DD format
 	currentTime := time.Now()
 	pastTime := currentTime.AddDate(0, 0, -10)
@@ -44,14 +44,14 @@ func (policyCurrent *PolicyCurrent) Get(country string) (time.Time, int, error) 
 	//gets json output from API and branch if an error occurred
 	status, err := policyCurrent.req(url)
 	if err != nil {
-		return time.Time{}, status, err
+		return "", status, err
 	}
 	//branch if output from API is empty and return error
 	if policyCurrent.isEmpty() {
 		err = errors.New("policyCurrent validation: policyCurrent is empty")
-		return time.Time{}, http.StatusNotFound, err
+		return "", http.StatusNotFound, err
 	}
-	return currentTime, http.StatusOK, nil
+	return currentTime.String(), http.StatusOK, nil
 }
 // req will request from API based on URL.
 func (policyCurrent *PolicyCurrent) req(url string) (int, error) {
@@ -69,5 +69,5 @@ func (policyCurrent *PolicyCurrent) req(url string) (int, error) {
 }
 // isEmpty checks if PolicyCurrent is empty.
 func (policyCurrent *PolicyCurrent) isEmpty() bool {
-    return policyCurrent.Stringencydata.Stringency == nil
+    return policyCurrent.Stringencydata.CountryCode == nil
 }

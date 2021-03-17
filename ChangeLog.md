@@ -103,3 +103,5 @@
 [1.8.0] development: Added trend calculation
 
 [1.9.0] development: Added get in Policy structure
+
+[1.10.0] development: Added getCurrent and update in Policy structure
