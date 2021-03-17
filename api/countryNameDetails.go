@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+// CountryNameDetails stores country name details.
+//
+// CountryNameDetails: Get, req
+type CountryNameDetails []struct {
+	Name       string `json:"name"`
+	Alpha3Code string `json:"alpha3Code"`
+}
 // get will update CountryNameDetails based on input.
 func (countryNameDetails *CountryNameDetails) Get(country string) (int, error) {
 	url := "https://restcountries.eu/rest/v2/name/" + country + "?fields=name;alpha3Code"

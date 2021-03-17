@@ -8,6 +8,17 @@ import (
 	"net/http"
 )
 
+// Cases stores data about COVID cases based on user input.
+//
+// Functionality: Handler, get, getTotal, getHistory, update
+type Cases struct {
+	Country              string  `json:"country"`
+	Continent            string  `json:"continent"`
+	Scope                string  `json:"scope"`
+	Confirmed            int     `json:"confirmed"`
+	Recovered            int     `json:"recovered"`
+	PopulationPercentage float64 `json:"population_percentage"`
+}
 // Handler will handle http request for COVID cases.
 func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//parse url and branch if an error occurred
