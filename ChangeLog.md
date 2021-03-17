@@ -90,6 +90,8 @@
 
 [1.4.0] development: Increased timeout variable to 4 seconds since some REST services are slow
 
-[1.4.0] development: Added Get, req, isEmpty and testing to PolicyHistory
+[1.5.0] development: Added Get, req, isEmpty and testing to PolicyHistory
 
-[1.4.1] formatting: Moved structures to the same file as their functions
+[1.5.1] formatting: Moved structures to the same file as their functions
+
+[1.6.0] development: Added decreaseTime function in PolicyHistory

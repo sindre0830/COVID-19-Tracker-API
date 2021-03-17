@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"time"
 )
 
 // PolicyHistory stores data about COVID policies for all countries between two dates.
@@ -25,6 +26,14 @@ type PolicyHistory struct {
 }
 // get will update PolicyHistory based on input.
 func (policyHistory *PolicyHistory) Get(country string, startDate string, endDate string) (int, error) {
+	startDate, err := policyHistory.decreaseDate(startDate)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	endDate, err = policyHistory.decreaseDate(endDate)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/" + startDate + "/" + endDate
 	//gets json output from API and branch if an error occurred
 	status, err := policyHistory.req(url)
@@ -55,4 +64,14 @@ func (policyHistory *PolicyHistory) req(url string) (int, error) {
 // isEmpty checks if PolicyHistory is empty.
 func (policyHistory *PolicyHistory) isEmpty() bool {
     return policyHistory.Scale == nil
+}
+
+func (policyHistory *PolicyHistory) decreaseDate(date string) (string, error) {
+	dateTime, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return "", err
+	}
+	dateTime = dateTime.AddDate(0, 0, -10)
+	date = dateTime.Format("2006-01-02")
+	return date, nil
 }
