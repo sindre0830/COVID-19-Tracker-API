@@ -1,6 +1,9 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+	"time"
+)
 
 // Policy stores data about COVID policies based on user input.
 //
@@ -48,6 +51,15 @@ func (policy *Policy) getCurrent(country string) (int, error) {
 }
 // getHistory will get COVID policies between two dates.
 func (policy *Policy) getHistory(country string, startDate string, endDate string) (int, error) {
+	var data PolicyHistory
+	//get total cases and branch if an error occurred
+	trend, status, err := data.Get(country, startDate, endDate)
+	if err != nil {
+		return status, err
+	}
+	currentTime := time.Now()
+	//set data in cases
+	policy.update(country, startDate + "-" + endDate, data.Data[country][endDate].Stringency, trend, currentTime.String())
 	return http.StatusOK, nil
 }
 // update sets new data in cases.

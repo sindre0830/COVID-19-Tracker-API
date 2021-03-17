@@ -105,3 +105,5 @@
 [1.9.0] development: Added get in Policy structure
 
 [1.10.0] development: Added getCurrent and update in Policy structure
+
+[1.11.0] development: Added getHistory in Policy structure
