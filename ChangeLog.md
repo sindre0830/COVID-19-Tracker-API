@@ -99,3 +99,5 @@
 [1.6.1] formatting: Added comments in decreaseTime
 
 [1.7.0] development: Moved object declaration in testing functions to always start with an empty object
+
+[1.8.0] development: Added trend calculation

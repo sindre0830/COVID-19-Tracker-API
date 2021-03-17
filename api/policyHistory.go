@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"math"
 	"net/http"
 	"time"
 )
@@ -25,28 +26,30 @@ type PolicyHistory struct {
 	} `json:"data"`
 }
 // get will update PolicyHistory based on input.
-func (policyHistory *PolicyHistory) Get(country string, startDate string, endDate string) (int, error) {
+func (policyHistory *PolicyHistory) Get(country string, startDate string, endDate string) (float64, int, error) {
 	//decreases both dates by 10 days since the API data is 10 days late and branch if an error occurred
 	startDate, err := policyHistory.decreaseDate(startDate)
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return 0, http.StatusInternalServerError, err
 	}
 	endDate, err = policyHistory.decreaseDate(endDate)
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return 0, http.StatusInternalServerError, err
 	}
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/" + startDate + "/" + endDate
 	//gets json output from API and branch if an error occurred
 	status, err := policyHistory.req(url)
 	if err != nil {
-		return status, err
+		return 0, status, err
 	}
 	//branch if output from API is empty and return error
 	if policyHistory.isEmpty() {
 		err = errors.New("object validation: PolicyHistory is empty")
-		return http.StatusNotFound, err
+		return 0, http.StatusNotFound, err
 	}
-	return http.StatusOK, nil
+	trend := policyHistory.Data[country][endDate].Stringency - policyHistory.Data[country][startDate].Stringency
+	trend = math.Round(trend * 100) / 100
+	return trend, http.StatusOK, nil
 }
 // req will request from API based on URL.
 func (policyHistory *PolicyHistory) req(url string) (int, error) {
