@@ -125,3 +125,5 @@
 [1.15.2] formatting: Modified comments and error messages in cases package
 
 [1.16.0] development: Added testing to CasesHistory and CasesTotal
+
+[1.17.0] development: Fixed array size in policy testing package

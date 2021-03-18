@@ -8,7 +8,7 @@ import (
 
 func Test_PolicyHistory_Get(t *testing.T) {
 	//store expected data to check against
-	data := map[[3]string]int{
+	data := map[[2]string]int{
 		{"2021-01-01", "2021-03-01"}: http.StatusOK,
 		{"2022-01-01", "2022-03-01"}: http.StatusNotFound,
 		{"2016-01-01", "2016-03-01"}: http.StatusNotFound,
