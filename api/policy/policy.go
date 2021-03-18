@@ -5,7 +5,6 @@ import (
 	"main/api"
 	"main/debug"
 	"main/fun"
-	"math"
 	"net/http"
 	"time"
 )
@@ -163,7 +162,7 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 	currentTime := time.Now()
 	//get trend
 	trend := policyHistory.Data[newEndDate][country].StringencyActual - policyHistory.Data[startDate][country].StringencyActual
-	trend = math.Round(trend * 100) / 100
+	trend = fun.LimitDecimals(trend)
 	//set data in cases
 	policy.update(startDate + "-" + endDate, policyHistory.Data[newEndDate][country].StringencyActual, trend, currentTime.String())
 	return http.StatusOK, nil

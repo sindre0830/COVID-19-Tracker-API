@@ -2,12 +2,17 @@ package fun
 
 import (
 	"errors"
+	"math"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 )
 
+// LimitDecimals limits decimals to two.
+func LimitDecimals(number float64) float64 {
+	return (math.Round(number * 100) / 100)
+}
 // ParseURL parses URL to country and possible scope.
 func ParseURL(inpURL *url.URL) (string, string, int, error) {
 	//split URL path by '/'

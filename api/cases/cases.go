@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"main/debug"
 	"main/fun"
-	"math"
 	"net/http"
 )
 
@@ -147,6 +146,5 @@ func (cases *Cases) update(country string, continent string, scope string, confi
 	cases.Scope = scope
 	cases.Confirmed = confirmed
 	cases.Recovered = recovered
-	//https://yourbasic.org/golang/round-float-2-decimal-places/#float-to-float
-	cases.PopulationPercentage = (math.Round((float64(confirmed) / float64(population)) * 100) / 100)
+	cases.PopulationPercentage = fun.LimitDecimals(float64(confirmed) / float64(population))
 }
