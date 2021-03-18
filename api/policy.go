@@ -100,18 +100,18 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 }
 // get will update Policy based on input.
 func (policy *Policy) get(country string, startDate string, endDate string) (int, error) {
-	var countryCode CountryNameDetails
-	countryCode.Get(country)
+	var countryNameDetails CountryNameDetails
+	countryNameDetails.Get(country)
 	//branch if scope parameter is used
 	if startDate == "" {
 		//get all available data and branch if an error occurred
-		status, err := policy.getCurrent(countryCode[0].Alpha3Code)
+		status, err := policy.getCurrent(countryNameDetails[0].Alpha3Code)
 		if err != nil {
 			return status, err
 		}
 	} else {
 		//get data between two dates and branch if an error occurred
-		status, err := policy.getHistory(countryCode[0].Alpha3Code, startDate, endDate)
+		status, err := policy.getHistory(countryNameDetails[0].Alpha3Code, startDate, endDate)
 		if err != nil {
 			return status, err
 		}
@@ -121,7 +121,7 @@ func (policy *Policy) get(country string, startDate string, endDate string) (int
 }
 // getCurrent will get current available COVID policies.
 func (policy *Policy) getCurrent(country string) (int, error) {
-	var data PolicyCurrent
+	var policyCurrent PolicyCurrent
 	//get current time and decrease it by 10 days since the API data is 10 days late and branch if an error occurred
 	currentTime := time.Now()
 	date := currentTime.Format("2006-01-02")
@@ -130,17 +130,17 @@ func (policy *Policy) getCurrent(country string) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	//get total cases and branch if an error occurred
-	status, err := data.Get(country, date)
+	status, err := policyCurrent.Get(country, date)
 	if err != nil {
 		return status, err
 	}
 	//set data in cases
-	policy.update("total", data.Stringencydata.Stringency, 0, currentTime.String())
+	policy.update("total", policyCurrent.Stringencydata.Stringency, 0, currentTime.String())
 	return http.StatusOK, nil
 }
 // getHistory will get COVID policies between two dates.
 func (policy *Policy) getHistory(country string, startDate string, endDate string) (int, error) {
-	var data PolicyHistory
+	var policyHistory PolicyHistory
 	//decreases both dates by 10 days since the API data is 10 days late and branch if an error occurred
 	newStartDate, err := policy.decreaseDate(startDate)
 	if err != nil {
@@ -151,16 +151,16 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 		return http.StatusInternalServerError, err
 	}
 	//get total cases and branch if an error occurred
-	status, err := data.Get(newStartDate, newEndDate)
+	status, err := policyHistory.Get(newStartDate, newEndDate)
 	if err != nil {
 		return status, err
 	}
 	currentTime := time.Now()
 	//get trend
-	trend := data.Data[newEndDate][country].StringencyActual - data.Data[startDate][country].StringencyActual
+	trend := policyHistory.Data[newEndDate][country].StringencyActual - policyHistory.Data[startDate][country].StringencyActual
 	trend = math.Round(trend * 100) / 100
 	//set data in cases
-	policy.update(startDate + "-" + endDate, data.Data[newEndDate][country].StringencyActual, trend, currentTime.String())
+	policy.update(startDate + "-" + endDate, policyHistory.Data[newEndDate][country].StringencyActual, trend, currentTime.String())
 	return http.StatusOK, nil
 }
 // update sets new data in cases.
