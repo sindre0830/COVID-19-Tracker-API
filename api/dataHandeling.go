@@ -8,7 +8,7 @@ import (
 )
 
 // requestData gets raw data from REST services based on URL.
-func requestData(url string) ([]byte, int, error) {
+func RequestData(url string) ([]byte, int, error) {
 	//create new request and branch if an error occurred
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {

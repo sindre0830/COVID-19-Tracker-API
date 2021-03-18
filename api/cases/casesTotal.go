@@ -1,8 +1,9 @@
-package api
+package cases
 
 import (
 	"encoding/json"
 	"errors"
+	"main/api"
 	"net/http"
 )
 
@@ -47,7 +48,7 @@ func (casesTot *casesTotal) get(country string) (int, error) {
 // req will request from API based on URL.
 func (casesTot *casesTotal) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
-	data, status, err := requestData(url)
+	data, status, err := api.RequestData(url)
 	if err != nil {
 		return status, err
 	}

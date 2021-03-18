@@ -1,4 +1,4 @@
-package api
+package cases
 
 import (
 	"encoding/json"

@@ -1,8 +1,9 @@
-package api
+package policy
 
 import (
 	"encoding/json"
 	"errors"
+	"main/api"
 	"net/http"
 )
 
@@ -49,7 +50,7 @@ func (policyCurrent *PolicyCurrent) Get(country string, date string) (int, error
 // req will request from API based on URL.
 func (policyCurrent *PolicyCurrent) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
-	data, status, err := requestData(url)
+	data, status, err := api.RequestData(url)
 	if err != nil {
 		return status, err
 	}

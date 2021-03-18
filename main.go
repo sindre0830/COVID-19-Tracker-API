@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"main/api"
+	"main/api/cases"
+	"main/api/policy"
 	"net/http"
 	"os"
 )
@@ -16,8 +17,8 @@ func main() {
 		port = "8080"
 	}
 	//declare structures with handlers
-	var cases api.Cases
-	var policy api.Policy
+	var cases cases.Cases
+	var policy policy.Policy
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.Handler)
 	http.HandleFunc("/corona/v1/policy/", policy.Handler)

@@ -1,7 +1,8 @@
-package api
+package policy
 
 import (
 	"encoding/json"
+	"main/api"
 	"main/debug"
 	"main/fun"
 	"math"
@@ -101,7 +102,7 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 // get will update Policy based on input.
 func (policy *Policy) get(country string, startDate string, endDate string) (int, error) {
 	//get country name details and branch if an error occurred
-	var countryNameDetails CountryNameDetails
+	var countryNameDetails api.CountryNameDetails
 	status, err := countryNameDetails.Get(country)
 	if err != nil {
 		return status, err

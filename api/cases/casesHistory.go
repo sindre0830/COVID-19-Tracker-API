@@ -1,8 +1,9 @@
-package api
+package cases
 
 import (
 	"encoding/json"
 	"errors"
+	"main/api"
 	"net/http"
 )
 
@@ -52,7 +53,7 @@ func (casesHis *casesHistory) get(country string, startDate string, endDate stri
 // req will request from API based on URL.
 func (casesHis *casesHistory) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
-	output, status, err := requestData(url)
+	output, status, err := api.RequestData(url)
 	if err != nil {
 		return status, err
 	}
