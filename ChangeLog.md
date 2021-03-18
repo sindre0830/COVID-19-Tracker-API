@@ -121,3 +121,5 @@
 [1.15.0] development: Added LimitDecimals in functionality package
 
 [1.15.1] formatting: Modified comments and error messages in policy package
+
+[1.15.2] formatting: Modified comments and error messages in cases package

@@ -117,26 +117,26 @@ func (cases *Cases) get(country string, startDate string, endDate string) (int, 
 }
 // getTotal will get all available data.
 func (cases *Cases) getTotal(country string) (int, error) {
-	var data casesTotal
+	var casesTotal CasesTotal
 	//get total cases and branch if an error occurred
-	status, err := data.get(country)
+	status, err := casesTotal.Get(country)
 	if err != nil {
 		return status, err
 	}
 	//set data in cases
-	cases.update(data.All.Country, data.All.Continent, "total", data.All.Confirmed, data.All.Recovered, data.All.Population)
+	cases.update(casesTotal.All.Country, casesTotal.All.Continent, "total", casesTotal.All.Confirmed, casesTotal.All.Recovered, casesTotal.All.Population)
 	return http.StatusOK, nil
 }
 // getHistory will get data between two dates.
 func (cases *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
-	var data casesHistory
+	var casesHistory CasesHistory
 	//get cases between two dates and branch if an error occurred
-	confirmed, recovered, status, err := data.get(country, startDate, endDate)
+	confirmed, recovered, status, err := casesHistory.Get(country, startDate, endDate)
 	if err != nil {
 		return status, err
 	}
 	//set data in cases
-	cases.update(data.All.Country, data.All.Continent, startDate + "-" + endDate, confirmed, recovered, data.All.Population)
+	cases.update(casesHistory.All.Country, casesHistory.All.Continent, startDate + "-" + endDate, confirmed, recovered, casesHistory.All.Population)
 	return http.StatusOK, nil
 }
 // update sets new data in cases.

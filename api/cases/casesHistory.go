@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-// casesHistory stores historcial data about COVID cases.
+// CasesHistory stores historcial data about COVID cases.
 //
-// Functionality: get, req, isEmpty, addCases
-type casesHistory struct {
+// Functionality: Get, req, isEmpty, addCases
+type CasesHistory struct {
 	All struct {
 		Country           string         `json:"country"`
 		Population        int            `json:"population"`
@@ -25,52 +25,52 @@ type casesHistory struct {
 		Dates             map[string]int `json:"dates"`
 	} `json:"All"`
 }
-// get will update casesHistory based on input.
-func (casesHis *casesHistory) get(country string, startDate string, endDate string) (int, int, int, error) {
+// get will update CasesHistory based on input.
+func (casesHistory *CasesHistory) Get(country string, startDate string, endDate string) (int, int, int, error) {
 	url := "https://covid-api.mmediagroup.fr/v1/history?country=" + country + "&status=Confirmed"
 	//gets JSON output from API based on confirmed cases and branch if an error occurred
-	status, err := casesHis.req(url)
+	status, err := casesHistory.req(url)
 	if err != nil {
 		return 0, 0, status, err
 	}
 	//branch if output from API is empty and return error
-	if casesHis.isEmpty() {
-		err = errors.New("casesHis validation: casesHis is empty")
+	if casesHistory.isEmpty() {
+		err = errors.New("casesHistory validation: casesHistory is empty")
 		return 0, 0, http.StatusBadRequest, err
 	}
 	//get cases between start and end date
-	confirmed := casesHis.addCases(startDate, endDate)
+	confirmed := casesHistory.addCases(startDate, endDate)
 	url = "https://covid-api.mmediagroup.fr/v1/history?country=" + country + "&status=Recovered"
 	//gets json output from API based on recovered cases and branch if an error occurred
-	status, err = casesHis.req(url)
+	status, err = casesHistory.req(url)
 	if err != nil {
 		return 0, 0, status, err
 	}
 	//get cases between start and end date
-	recovered := casesHis.addCases(startDate, endDate)
+	recovered := casesHistory.addCases(startDate, endDate)
 	return confirmed, recovered, http.StatusOK, nil
 }
 // req will request from API based on URL.
-func (casesHis *casesHistory) req(url string) (int, error) {
+func (casesHistory *CasesHistory) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	output, status, err := api.RequestData(url)
 	if err != nil {
 		return status, err
 	}
 	//convert raw data to JSON and branch if an error occurred
-	err = json.Unmarshal(output, &casesHis)
+	err = json.Unmarshal(output, &casesHistory)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusOK, nil
 }
-// isEmpty checks if casesHistory is empty.
-func (casesHis *casesHistory) isEmpty() bool {
-    return casesHis.All.Country == ""
+// isEmpty checks if CasesHistory is empty.
+func (casesHistory *CasesHistory) isEmpty() bool {
+    return casesHistory.All.Country == ""
 }
 // addCases gets cases between two dates.
-func (casesHis *casesHistory) addCases(startDate string, endDate string) int {
-	n:= casesHis.All.Dates[endDate] - casesHis.All.Dates[startDate]
+func (casesHistory *CasesHistory) addCases(startDate string, endDate string) int {
+	n:= casesHistory.All.Dates[endDate] - casesHistory.All.Dates[startDate]
 	//branch if number is negative and convert to absolute
 	if n < 0 {
 		n *= (-1)

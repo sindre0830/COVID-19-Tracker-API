@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-// casesTotal stores all data about COVID cases.
+// CasesTotal stores all data about COVID cases.
 //
 // Functionality: get, req, isEmpty
-type casesTotal struct {
+type CasesTotal struct {
 	All struct {
 		Confirmed         int          `json:"confirmed"`
 		Recovered         int          `json:"recovered"`
@@ -30,36 +30,36 @@ type casesTotal struct {
 		Updated           string       `json:"updated"`
 	} `json:"all"`
 }
-// get will update casesTotal based on input.
-func (casesTot *casesTotal) get(country string) (int, error) {
+// get will update CasesTotal based on input.
+func (casesTotal *CasesTotal) Get(country string) (int, error) {
 	url := "https://covid-api.mmediagroup.fr/v1/cases?country=" + country
 	//gets json output from API and branch if an error occurred
-	status, err := casesTot.req(url)
+	status, err := casesTotal.req(url)
 	if err != nil {
 		return status, err
 	}
 	//branch if output from API is empty and return error
-	if casesTot.isEmpty() {
-		err = errors.New("casesTot validation: casesTot is empty")
+	if casesTotal.isEmpty() {
+		err = errors.New("casesTotal validation: casesTotal is empty")
 		return http.StatusBadRequest, err
 	}
 	return http.StatusOK, nil
 }
 // req will request from API based on URL.
-func (casesTot *casesTotal) req(url string) (int, error) {
+func (casesTotal *CasesTotal) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	data, status, err := api.RequestData(url)
 	if err != nil {
 		return status, err
 	}
 	//convert raw data to JSON and branch if an error occurred
-	err = json.Unmarshal(data, &casesTot)
+	err = json.Unmarshal(data, &casesTotal)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusOK, nil
 }
-// isEmpty checks if casesTotal is empty.
-func (casesTot *casesTotal) isEmpty() bool {
-    return casesTot.All.Country == ""
+// isEmpty checks if CasesTotal is empty.
+func (casesTotal *CasesTotal) isEmpty() bool {
+    return casesTotal.All.Country == ""
 }
