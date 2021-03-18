@@ -11,7 +11,7 @@ import (
 
 // Policy stores data about COVID policies based on user input.
 //
-// Functionality: Handler, get, getTotal, getHistory, update
+// Functionality: Handler, get, getTotal, getHistory, update, decreaseDate
 type Policy struct {
 	Country    string  `json:"country"`
 	Scope      string  `json:"scope"`
@@ -38,14 +38,14 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		debug.UpdateErrorMessage(
 			http.StatusBadRequest,
-			"Cases.Handler() -> ValidatingCountry() -> Checking if inputed country is valid",
+			"Policy.Handler() -> ValidatingCountry() -> Checking if inputted country is valid",
 			err.Error(),
 			"Country format. Expected format: '.../country'. Example: '.../norway'",
 		)
 		debug.PrintErrorInformation(w)
 		return
 	}
-	//convert to required syntax
+	//convert to required syntax (norway -> Norway)
 	country = fun.ConvertCountry(country)
 	//set default start- and end date variables (total) and check if user inputted scope
 	startDate := ""
@@ -56,7 +56,7 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			debug.UpdateErrorMessage(
 				http.StatusBadRequest, 
-				"Cases.Handler() -> Checking if inputed dates are valid",
+				"Policy.Handler() -> Checking if inputed dates are valid",
 				err.Error(),
 				"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?2020-01-20-2021-02-01'",
 			)
@@ -70,13 +70,14 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	status, err = policy.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
+		//update reason if status code shows client error
 		reason := "Unknown"
-		if status == http.StatusBadRequest {
+		if status == http.StatusBadRequest || status == http.StatusNotFound {
 			reason = "Country format. Either country doesn't exist in our database or it's mistyped"
 		}
 		debug.UpdateErrorMessage(
 			status, 
-			"Cases.Handler() -> Cases.get() -> Getting covid cases data",
+			"Policy.Handler() -> Policy.get() -> Getting covid policies data",
 			err.Error(),
 			reason,
 		)
@@ -91,7 +92,7 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		debug.UpdateErrorMessage(
 			http.StatusInternalServerError, 
-			"Cases.Handler() -> Sending data to user",
+			"Policy.Handler() -> Sending data to user",
 			err.Error(),
 			"Unknown",
 		)

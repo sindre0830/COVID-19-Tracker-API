@@ -32,7 +32,7 @@ type PolicyCurrent struct {
 		Msg              *interface{} `json:"msg"`
 	} `json:"stringencyData"`
 }
-// get will update PolicyCurrent based on input.
+// Get will update PolicyCurrent based on input.
 func (policyCurrent *PolicyCurrent) Get(country string, date string) (int, error) {
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/actions/" + country + "/" + date
 	//gets json output from API and branch if an error occurred

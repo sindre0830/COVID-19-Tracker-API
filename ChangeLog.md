@@ -119,3 +119,5 @@
 [1.14.1] formatting: Added policy and cases packages and moved testing to the same folder as their package
 
 [1.15.0] development: Added LimitDecimals in functionality package
+
+[1.15.1] formatting: Modified comments and error messages in policy package
