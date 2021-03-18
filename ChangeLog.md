@@ -127,3 +127,5 @@
 [1.16.0] development: Added testing to CasesHistory and CasesTotal
 
 [1.17.0] development: Fixed array size in policy testing package
+
+[1.18.0] development: Added testing to Policy Handler
