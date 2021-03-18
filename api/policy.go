@@ -100,8 +100,12 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 }
 // get will update Policy based on input.
 func (policy *Policy) get(country string, startDate string, endDate string) (int, error) {
+	//get country name details and branch if an error occurred
 	var countryNameDetails CountryNameDetails
-	countryNameDetails.Get(country)
+	status, err := countryNameDetails.Get(country)
+	if err != nil {
+		return status, err
+	}
 	//branch if scope parameter is used
 	if startDate == "" {
 		//get all available data and branch if an error occurred

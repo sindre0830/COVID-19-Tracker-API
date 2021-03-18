@@ -113,3 +113,5 @@
 [1.13.0] development: Fixed stringency output from PolicyHistory
 
 [1.13.1] formatting: Renamed structure types from data to their relevant name
+
+[1.14.0] development: Added error catching if alphacode isn't found
