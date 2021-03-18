@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_casesHandler(t *testing.T) {
+func Test_Cases_Handler(t *testing.T) {
 	//store expected data to check against
 	data := map[string]int{
 		//test path
@@ -39,6 +39,48 @@ func Test_casesHandler(t *testing.T) {
 		//branch if we get an unexpected answer
 		if recorder.Code != expectedStatus {
 			t.Errorf("Expected '%v' but got '%v'. Tested: %v", expectedStatus, recorder.Code, url)
+		}
+	}
+}
+
+func Test_CasesHistory_Get(t *testing.T) {
+	//store expected data to check against
+	data := map[[3]string]int{
+		{"Norway", "2021-01-01", "2021-03-01"}: http.StatusOK,
+		{"Norway", "2022-01-01", "2022-03-01"}: http.StatusOK,
+		{"Norway", "2016-01-01", "2016-03-01"}: http.StatusOK,
+		{"norway", "2021-01-01", "2021-03-01"}: http.StatusBadRequest,
+		{"USA", "2021-01-01", "2021-03-01"}: http.StatusBadRequest,
+		{"US", "2021-01-01", "2021-03-01"}: http.StatusOK,
+	}
+	//iterate through map and check each key to expected element
+	for arrTestData, expectedStatus := range data {
+		var casesHistory cases.CasesHistory
+		_, _, status, _ := casesHistory.Get(arrTestData[0], arrTestData[1], arrTestData[2])
+		//branch if we get an unexpected answer
+		if status != expectedStatus {
+			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, arrTestData)
+		}
+	}
+}
+
+func Test_CasesTotal_Get(t *testing.T) {
+	//store expected data to check against
+	data := map[string]int{
+		"Norway": http.StatusOK,
+		"norway": http.StatusBadRequest,
+		"nor": http.StatusBadRequest,
+		"USA": http.StatusBadRequest,
+		"US": http.StatusOK,
+		"Us": http.StatusBadRequest,
+	}
+	//iterate through map and check each key to expected element
+	for testData, expectedStatus := range data {
+		var casesTotal cases.CasesTotal
+		status, _ := casesTotal.Get(testData)
+		//branch if we get an unexpected answer
+		if status != expectedStatus {
+			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, testData)
 		}
 	}
 }

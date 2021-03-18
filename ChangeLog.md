@@ -123,3 +123,5 @@
 [1.15.1] formatting: Modified comments and error messages in policy package
 
 [1.15.2] formatting: Modified comments and error messages in cases package
+
+[1.16.0] development: Added testing to CasesHistory and CasesTotal
