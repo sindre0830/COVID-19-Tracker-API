@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"time"
 )
 
 // PolicyCurrent stores data about current COVID policies based on a country.
@@ -33,23 +32,19 @@ type PolicyCurrent struct {
 	} `json:"stringencyData"`
 }
 // get will update PolicyCurrent based on input.
-func (policyCurrent *PolicyCurrent) Get(country string) (string, int, error) {
-	//get current time in YYYY-MM-DD format
-	currentTime := time.Now()
-	pastTime := currentTime.AddDate(0, 0, -10)
-	date := pastTime.Format("2006-01-02")
+func (policyCurrent *PolicyCurrent) Get(country string, date string) (int, error) {
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/actions/" + country + "/" + date
 	//gets json output from API and branch if an error occurred
 	status, err := policyCurrent.req(url)
 	if err != nil {
-		return "", status, err
+		return status, err
 	}
 	//branch if output from API is empty and return error
 	if policyCurrent.isEmpty() {
 		err = errors.New("policyCurrent validation: policyCurrent is empty")
-		return "", http.StatusNotFound, err
+		return http.StatusNotFound, err
 	}
-	return currentTime.String(), http.StatusOK, nil
+	return http.StatusOK, nil
 }
 // req will request from API based on URL.
 func (policyCurrent *PolicyCurrent) req(url string) (int, error) {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"main/debug"
 	"main/fun"
+	"math"
 	"net/http"
 	"time"
 )
@@ -121,26 +122,45 @@ func (policy *Policy) get(country string, startDate string, endDate string) (int
 // getCurrent will get current available COVID policies.
 func (policy *Policy) getCurrent(country string) (int, error) {
 	var data PolicyCurrent
+	//get current time and decrease it by 10 days since the API data is 10 days late and branch if an error occurred
+	currentTime := time.Now()
+	date := currentTime.Format("2006-01-02")
+	date, err := policy.decreaseDate(date)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
 	//get total cases and branch if an error occurred
-	updated, status, err := data.Get(country)
+	status, err := data.Get(country, date)
 	if err != nil {
 		return status, err
 	}
 	//set data in cases
-	policy.update("total", data.Stringencydata.Stringency, 0, updated)
+	policy.update("total", data.Stringencydata.Stringency, 0, currentTime.String())
 	return http.StatusOK, nil
 }
 // getHistory will get COVID policies between two dates.
 func (policy *Policy) getHistory(country string, startDate string, endDate string) (int, error) {
 	var data PolicyHistory
+	//decreases both dates by 10 days since the API data is 10 days late and branch if an error occurred
+	newStartDate, err := policy.decreaseDate(startDate)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	newEndDate, err := policy.decreaseDate(endDate)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
 	//get total cases and branch if an error occurred
-	trend, status, err := data.Get(country, startDate, endDate)
+	status, err := data.Get(newStartDate, newEndDate)
 	if err != nil {
 		return status, err
 	}
 	currentTime := time.Now()
+	//get trend
+	trend := data.Data[newEndDate][country].StringencyActual - data.Data[startDate][country].StringencyActual
+	trend = math.Round(trend * 100) / 100
 	//set data in cases
-	policy.update(startDate + "-" + endDate, data.Data[country][endDate].Stringency, trend, currentTime.String())
+	policy.update(startDate + "-" + endDate, data.Data[newEndDate][country].StringencyActual, trend, currentTime.String())
 	return http.StatusOK, nil
 }
 // update sets new data in cases.
@@ -149,4 +169,16 @@ func (policy *Policy) update(scope string, stringency float64, trend float64, up
 	policy.Stringency = stringency
 	policy.Trend = trend
 	policy.Update = update
+}
+// decreaseDate decreases the date by 10 days.
+func (policy *Policy) decreaseDate(date string) (string, error) {
+	//parse date to time format and branch if an error occurred
+	dateTime, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return "", err
+	}
+	//decrase date by 10 days and parse back to string
+	dateTime = dateTime.AddDate(0, 0, -10)
+	date = dateTime.Format("2006-01-02")
+	return date, nil
 }

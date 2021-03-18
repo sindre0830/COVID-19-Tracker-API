@@ -3,9 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
-	"math"
 	"net/http"
-	"time"
 )
 
 // PolicyHistory stores data about COVID policies for all countries between two dates.
@@ -15,7 +13,7 @@ type PolicyHistory struct {
 	Scale     map[string]map[string]int `json:"scale"`
 	Countries []string                  `json:"countries"`
 	Data      map[string]map[string]struct {
-		DataValue            string  `json:"date_value"`
+		DateValue            string  `json:"date_value"`
 		CountryCode          string  `json:"country_code"`
 		Confirmed            int     `json:"confirmed"`
 		Deaths               int     `json:"deaths"`
@@ -26,30 +24,19 @@ type PolicyHistory struct {
 	} `json:"data"`
 }
 // get will update PolicyHistory based on input.
-func (policyHistory *PolicyHistory) Get(country string, startDate string, endDate string) (float64, int, error) {
-	//decreases both dates by 10 days since the API data is 10 days late and branch if an error occurred
-	startDate, err := policyHistory.decreaseDate(startDate)
-	if err != nil {
-		return 0, http.StatusInternalServerError, err
-	}
-	endDate, err = policyHistory.decreaseDate(endDate)
-	if err != nil {
-		return 0, http.StatusInternalServerError, err
-	}
+func (policyHistory *PolicyHistory) Get(startDate string, endDate string) (int, error) {
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/" + startDate + "/" + endDate
 	//gets json output from API and branch if an error occurred
 	status, err := policyHistory.req(url)
 	if err != nil {
-		return 0, status, err
+		return status, err
 	}
 	//branch if output from API is empty and return error
 	if policyHistory.isEmpty() {
 		err = errors.New("object validation: PolicyHistory is empty")
-		return 0, http.StatusNotFound, err
+		return http.StatusNotFound, err
 	}
-	trend := policyHistory.Data[country][endDate].Stringency - policyHistory.Data[country][startDate].Stringency
-	trend = math.Round(trend * 100) / 100
-	return trend, http.StatusOK, nil
+	return http.StatusOK, nil
 }
 // req will request from API based on URL.
 func (policyHistory *PolicyHistory) req(url string) (int, error) {
@@ -68,16 +55,4 @@ func (policyHistory *PolicyHistory) req(url string) (int, error) {
 // isEmpty checks if PolicyHistory is empty.
 func (policyHistory *PolicyHistory) isEmpty() bool {
     return policyHistory.Scale == nil
-}
-// decreaseDate decreases the date by 10 days.
-func (policyHistory *PolicyHistory) decreaseDate(date string) (string, error) {
-	//parse date to time format and branch if an error occurred
-	dateTime, err := time.Parse("2006-01-02", date)
-	if err != nil {
-		return "", err
-	}
-	//decrase date by 10 days and parse back to string
-	dateTime = dateTime.AddDate(0, 0, -10)
-	date = dateTime.Format("2006-01-02")
-	return date, nil
 }
