@@ -139,3 +139,5 @@
 [2.0.0] setup: Initial commit of diagnosis structure
 
 [2.1.0] development: Added update function to diagnosis
+
+[2.2.0] development: Added request function to diagnosis

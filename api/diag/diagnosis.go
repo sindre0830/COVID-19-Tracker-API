@@ -21,8 +21,11 @@ func (diagnosis *Diagnosis) get() (int, error) {
 }
 
 func (diagnosis *Diagnosis) req(url string) (int, error) {
-
-	return http.StatusOK, nil
+	rsp, err := http.Get(url)
+	if err != nil {
+		return rsp.StatusCode, err
+	}
+	return rsp.StatusCode, nil
 }
 
 func (diagnosis *Diagnosis) update(mmediagroupStatus int, covidtrackerStatus int, restcountriesStatus int) {
