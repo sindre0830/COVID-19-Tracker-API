@@ -1,8 +1,18 @@
 package diag
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"main/debug"
+	"net/http"
+	"time"
+)
 
+// StartTime is a variable declared at the start of the program to calculate uptime.
+var StartTime time.Time
 // Diagnosis structure keeps version, uptime and status codes on used API's.
+//
+// Functionality: Handler, get, req, update, getUptime
 type Diagnosis struct {
 	Mmediagroupapi   int    `json:"mmediagroupapi"`
 	Covidtrackerapi  int    `json:"covidtrackerapi"`
@@ -13,7 +23,38 @@ type Diagnosis struct {
 }
 
 func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
-	
+	//status codes for used REST services
+	status, err := diagnosis.get()
+	//branch if there is an error
+	if err != nil {
+		debug.UpdateErrorMessage(
+			status, 
+			"HandlerDiagnosis() -> Getting status codes from used REST services",
+			err.Error(),
+			"Unknown",
+		)
+		debug.PrintErrorInformation(w)
+		return
+	}
+	//amount of registerd webhooks (not implemented yet)
+	diagnosis.Registered = 0
+	diagnosis.Version = "v1"
+	//get uptime
+	diagnosis.Uptime = fmt.Sprintf("%f", diagnosis.getUptime())
+	//set header to JSON
+	w.Header().Set("Content-Type", "application/json")
+	//send output to user
+	err = json.NewEncoder(w).Encode(diagnosis)
+	//branch if something went wrong with output
+	if err != nil {
+		debug.UpdateErrorMessage(
+			http.StatusInternalServerError, 
+			"Diagnosis.Handler() -> Sending output to user",
+			err.Error(),
+			"Unknown",
+		)
+		debug.PrintErrorInformation(w)
+	}
 }
 
 func (diagnosis *Diagnosis) get() (int, error) {
@@ -45,4 +86,8 @@ func (diagnosis *Diagnosis) update(mmediagroupStatus int, covidtrackerStatus int
 	diagnosis.Mmediagroupapi = mmediagroupStatus
 	diagnosis.Covidtrackerapi = covidtrackerStatus
 	diagnosis.Restcountriesapi = restcountriesStatus
+}
+// getUptime calculates uptime based on start time and current time.
+func (diagnosis *Diagnosis) getUptime() float64 {
+	return time.Since(StartTime).Seconds()
 }
