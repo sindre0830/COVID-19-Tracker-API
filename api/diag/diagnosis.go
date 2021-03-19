@@ -13,7 +13,7 @@ type Diagnosis struct {
 }
 
 func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
-
+	
 }
 
 func (diagnosis *Diagnosis) get() (int, error) {
@@ -26,5 +26,7 @@ func (diagnosis *Diagnosis) req(url string) (int, error) {
 }
 
 func (diagnosis *Diagnosis) update(mmediagroupStatus int, covidtrackerStatus int, restcountriesStatus int) {
-
+	diagnosis.Mmediagroupapi = mmediagroupStatus
+	diagnosis.Covidtrackerapi = covidtrackerStatus
+	diagnosis.Restcountriesapi = restcountriesStatus
 }
