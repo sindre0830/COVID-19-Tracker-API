@@ -37,5 +37,5 @@ func PrintErrorInformation(w http.ResponseWriter) {
 		return
 	}
 	//send error output to console
-	fmt.Printf("\nstatus_code: %v,\nlocation: %s,\nraw_error: %s,\npossible_reason: %s\n", ErrorMsg.StatusCode, ErrorMsg.Location, ErrorMsg.RawError, ErrorMsg.PossibleReason)
+	fmt.Printf("\nError {\n\tstatus_code:\t\t%v,\n\tlocation:\t\t%s,\n\traw_error:\t\t%s,\n\tpossible_reason:\t%s\n}\n", ErrorMsg.StatusCode, ErrorMsg.Location, ErrorMsg.RawError, ErrorMsg.PossibleReason)
 }

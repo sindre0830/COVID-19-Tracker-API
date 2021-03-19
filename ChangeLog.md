@@ -129,3 +129,5 @@
 [1.17.0] development: Fixed array size in policy testing package
 
 [1.18.0] development: Added testing to Policy Handler
+
+[1.18.1] formatting: Modified format of error output in CMD for readability
