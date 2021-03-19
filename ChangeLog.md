@@ -133,3 +133,7 @@
 [1.18.1] formatting: Modified format of error output in CMD for readability
 
 [1.19.0] development: Added dictionary to deal with country edge cases
+
+**Milestone Reached:** Policy endpoint has been implement
+
+[2.0.0] setup: Initial commit of diagnosis structure
