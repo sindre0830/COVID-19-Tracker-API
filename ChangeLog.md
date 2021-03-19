@@ -153,3 +153,5 @@
 **Milestone Reached:** Diagnosis endpoint has been implement
 
 [3.0.0] setup: Initial commit of notification structure
+
+[3.0.1] setup: Initial commit of notificationGetAll structure
