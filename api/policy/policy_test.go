@@ -12,7 +12,7 @@ func Test_Policy_Handler(t *testing.T) {
 	//store expected data to check against
 	data := map[string]int{
 		//test path
-		"http://localhost:8080/corona/v1/policy/":        http.StatusBadRequest,
+		"http://localhost:8080/corona/v1/policy/":        http.StatusNotFound,
 		"http://localhost:8080/corona/v1/policy/norway/": http.StatusBadRequest,
 		"http://localhost:8080/corona/v1/policy/norway":  http.StatusOK,
 		//test country edge case

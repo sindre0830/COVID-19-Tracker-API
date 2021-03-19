@@ -1,7 +1,8 @@
-package api
+package countryinfo
 
 import (
 	"encoding/json"
+	"main/api"
 	"net/http"
 )
 
@@ -25,7 +26,7 @@ func (countryNameDetails *CountryNameDetails) Get(country string) (int, error) {
 // req will request from API based on URL.
 func (countryNameDetails *CountryNameDetails) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
-	data, status, err := RequestData(url)
+	data, status, err := api.RequestData(url)
 	if err != nil {
 		return status, err
 	}

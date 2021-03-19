@@ -1,7 +1,7 @@
-package api_test
+package countryinfo_test
 
 import (
-	"main/api"
+	"main/api/countryinfo"
 	"net/http"
 	"testing"
 )
@@ -15,7 +15,7 @@ func Test_CountryNameDetails_Get(t *testing.T) {
 	}
 	//iterate through map and check each key to expected element
 	for country, expectedStatus := range data {
-		var countryNameDetails api.CountryNameDetails
+		var countryNameDetails countryinfo.CountryNameDetails
 		status, _ := countryNameDetails.Get(country)
 		//branch if we get an unexpected answer
 		if status != expectedStatus {

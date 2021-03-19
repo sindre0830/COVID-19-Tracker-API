@@ -2,7 +2,7 @@ package cases
 
 import (
 	"encoding/json"
-	"main/api"
+	"main/api/countryinfo"
 	"main/debug"
 	"main/dict"
 	"main/fun"
@@ -35,7 +35,7 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//get alphacode and countryname by RestCountry definition and branch if an error occurred
-	var countryNameDetails api.CountryNameDetails
+	var countryNameDetails countryinfo.CountryNameDetails
 	status, err = countryNameDetails.Get(country)
 	if err != nil {
 		debug.ErrorMessag.Update(
@@ -57,7 +57,7 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	err = fun.ValidateCountry(country)
 	if err != nil {
 		debug.ErrorMessag.Update(
-			http.StatusBadRequest,
+			http.StatusNotFound,
 			"Cases.Handler() -> ValidatingCountry() -> Checking if inputed country is valid",
 			err.Error(),
 			"Country format. Expected format: '.../country'. Example: '.../norway'",
