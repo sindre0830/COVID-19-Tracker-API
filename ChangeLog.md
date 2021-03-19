@@ -145,3 +145,5 @@
 [2.3.0] development: Added get function to diagnosis
 
 [2.4.0] development: Added Handler function to diagnosis
+
+[2.5.0] development: Changed debug package to use structure functionality for consistency

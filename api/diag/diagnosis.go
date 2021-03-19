@@ -27,13 +27,13 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 	status, err := diagnosis.get()
 	//branch if there is an error
 	if err != nil {
-		debug.UpdateErrorMessage(
+		debug.ErrorMessag.Update(
 			status, 
 			"HandlerDiagnosis() -> Getting status codes from used REST services",
 			err.Error(),
 			"Unknown",
 		)
-		debug.PrintErrorInformation(w)
+		debug.ErrorMessag.Print(w)
 		return
 	}
 	//amount of registerd webhooks (not implemented yet)
@@ -47,13 +47,13 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(diagnosis)
 	//branch if something went wrong with output
 	if err != nil {
-		debug.UpdateErrorMessage(
+		debug.ErrorMessag.Update(
 			http.StatusInternalServerError, 
 			"Diagnosis.Handler() -> Sending output to user",
 			err.Error(),
 			"Unknown",
 		)
-		debug.PrintErrorInformation(w)
+		debug.ErrorMessag.Print(w)
 	}
 }
 

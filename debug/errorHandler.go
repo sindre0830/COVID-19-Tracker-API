@@ -6,36 +6,36 @@ import (
 	"net/http"
 )
 
-// ErrorMessage structure keeps all error data.
-type ErrorMessage struct {
+// ErrorMessag is a global variable.
+var ErrorMessag Debug
+// Debug structure keeps all error data.
+//
+// Functionality: Update, Print
+type Debug struct {
 	StatusCode 		 int    `json:"status_code"`
 	Location   		 string `json:"location"`
 	RawError   		 string `json:"raw_error"`
 	PossibleReason   string `json:"possible_reason"`
 }
-// ErrorMsg is a global variable.
-var ErrorMsg ErrorMessage
-// UpdateErrorMessage adds new information to error msg.
-func UpdateErrorMessage(status int, loc string, err string, reason string) {
-	ErrorMsg.StatusCode = status
-	ErrorMsg.Location = loc
-	ErrorMsg.RawError = err
-	ErrorMsg.PossibleReason = reason
+// Update adds new information to error msg.
+func (debug *Debug) Update(status int, loc string, err string, reason string) {
+	debug.StatusCode = status
+	debug.Location = loc
+	debug.RawError = err
+	debug.PossibleReason = reason
 }
-// PrintErrorInformation prints error msg to user and terminal.
-func PrintErrorInformation(w http.ResponseWriter) {
-	//declare error variable
-	var err error
+// Print prints error msg to user and terminal.
+func (debug *Debug) Print(w http.ResponseWriter) {
 	//update header to JSON and set HTTP code
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(ErrorMsg.StatusCode)
+	w.WriteHeader(debug.StatusCode)
 	//send error output to user
-	err = json.NewEncoder(w).Encode(ErrorMsg)
+	err := json.NewEncoder(w).Encode(debug)
 	//branch if something went wrong with output
 	if err != nil {
-		fmt.Println("ERROR encoding JSON in PrintErrorInformation()", err)
+		fmt.Println("ERROR encoding JSON in Debug.Print()", err)
 		return
 	}
 	//send error output to console
-	fmt.Printf("\nError {\n\tstatus_code:\t\t%v,\n\tlocation:\t\t%s,\n\traw_error:\t\t%s,\n\tpossible_reason:\t%s\n}\n", ErrorMsg.StatusCode, ErrorMsg.Location, ErrorMsg.RawError, ErrorMsg.PossibleReason)
+	fmt.Printf("\nError {\n\tstatus_code:\t\t%v,\n\tlocation:\t\t%s,\n\traw_error:\t\t%s,\n\tpossible_reason:\t%s\n}\n", debug.StatusCode, debug.Location, debug.RawError, debug.PossibleReason)
 }
