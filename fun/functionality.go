@@ -46,7 +46,7 @@ func ParseURL(inpURL *url.URL) (string, string, int, error) {
 // ValidateCountry checks if country is empty.
 func ValidateCountry(country string) error {
 	if country == "" {
-		err := errors.New("country validation: empty field")
+		err := errors.New("country validation: doesn't exist in ")
 		return err
 	}
 	return nil

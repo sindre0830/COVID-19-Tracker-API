@@ -12,14 +12,14 @@ func Test_Cases_Handler(t *testing.T) {
 	//store expected data to check against
 	data := map[string]int{
 		//test path
-		"http://localhost:8080/corona/v1/country/":        http.StatusBadRequest,
+		"http://localhost:8080/corona/v1/country/":        http.StatusNotFound,
 		"http://localhost:8080/corona/v1/country/norway/": http.StatusBadRequest,
 		"http://localhost:8080/corona/v1/country/norway":  http.StatusOK,
 		//test country edge case
 		"http://localhost:8080/corona/v1/country/italy":  http.StatusOK,
 		"http://localhost:8080/corona/v1/country/NORWAY": http.StatusOK,
 		"http://localhost:8080/corona/v1/country/nor":    http.StatusBadRequest,
-		"http://localhost:8080/corona/v1/country/usa":    http.StatusBadRequest,
+		"http://localhost:8080/corona/v1/country/usa":    http.StatusOK,
 		//test parameters
 		"http://localhost:8080/corona/v1/country/norway?":                                          http.StatusOK,
 		"http://localhost:8080/corona/v1/country/norway?abc=something":                             http.StatusBadRequest,

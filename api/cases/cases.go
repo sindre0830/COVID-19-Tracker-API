@@ -2,7 +2,9 @@ package cases
 
 import (
 	"encoding/json"
+	"main/api"
 	"main/debug"
+	"main/dict"
 	"main/fun"
 	"net/http"
 )
@@ -32,6 +34,25 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.PrintErrorInformation(w)
 		return
 	}
+	//get alphacode and countryname by RestCountry definition and branch if an error occurred
+	var countryNameDetails api.CountryNameDetails
+	status, err = countryNameDetails.Get(country)
+	if err != nil {
+		debug.UpdateErrorMessage(
+			status, 
+			"Cases.Handler() -> Getting alphacode",
+			err.Error(),
+			"Country format. Expected format: '.../country'. Example: '.../norway'",
+		)
+		debug.PrintErrorInformation(w)
+		return
+	}
+	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, otherwise use RestCountry country name
+	if countryName, ok := dict.Country[countryNameDetails[0].Alpha3Code]; ok {
+		country = countryName
+	} else {
+		country = countryNameDetails[0].Name
+	}
 	//validate country name and branch if an error occurred
 	err = fun.ValidateCountry(country)
 	if err != nil {
@@ -44,8 +65,6 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.PrintErrorInformation(w)
 		return
 	}
-	//convert to required syntax
-	country = fun.ConvertCountry(country)
 	//set default start- and end date variables (total) and check if user inputted scope
 	startDate := ""
 	endDate := ""

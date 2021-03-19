@@ -131,3 +131,5 @@
 [1.18.0] development: Added testing to Policy Handler
 
 [1.18.1] formatting: Modified format of error output in CMD for readability
+
+[1.19.0] development: Added dictionary to deal with country edge cases
