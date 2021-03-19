@@ -141,3 +141,5 @@
 [2.1.0] development: Added update function to diagnosis
 
 [2.2.0] development: Added request function to diagnosis
+
+[2.3.0] development: Added get function to diagnosis

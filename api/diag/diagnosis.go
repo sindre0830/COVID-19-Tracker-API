@@ -17,6 +17,19 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (diagnosis *Diagnosis) get() (int, error) {
+	mmediagroupStatus, err := diagnosis.req("https://covid-api.mmediagroup.fr/v1/cases")
+	if err != nil {
+		return mmediagroupStatus, err
+	}
+	covidtrackerStatus, err := diagnosis.req("https://restcountries.eu/rest/v2/all")
+	if err != nil {
+		return covidtrackerStatus, err
+	}
+	restcountriesStatus, err := diagnosis.req("https://restcountries.eu/rest/v2/all")
+	if err != nil {
+		return restcountriesStatus, err
+	}
+	diagnosis.update(mmediagroupStatus, covidtrackerStatus, restcountriesStatus)
 	return http.StatusOK, nil
 }
 
