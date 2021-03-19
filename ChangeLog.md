@@ -155,3 +155,5 @@
 [3.0.0] setup: Initial commit of notification structure
 
 [3.0.1] setup: Initial commit of notificationGetAll structure
+
+[3.0.2] setup: Initial commit of notificationGetOne structure
