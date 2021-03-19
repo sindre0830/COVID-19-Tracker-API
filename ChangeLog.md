@@ -163,3 +163,5 @@
 [3.1.0] development: Early version of MethodHandler with POST and GET functionality (copy from teachor for testing purposes)
 
 [3.2.0] development: Early version of ServiceHandler with POST functionality (copy from teachor for testing purposes)
+
+[3.2.1] formatting: Restructuring notification package

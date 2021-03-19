@@ -1,6 +1,6 @@
 package notification
 
-type notificationGetAll []struct {
+type notificationMessage struct {
 	ID          string `json:"id"`
 	URL         string `json:"url"`
 	Timeout     int    `json:"timeout"`
