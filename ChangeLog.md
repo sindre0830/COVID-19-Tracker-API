@@ -149,3 +149,7 @@
 [2.5.0] development: Changed debug package to use structure functionality for consistency
 
 [2.6.0] development: Moved CountryNameDetails structure to it's own package and changed status code to not found if country name is not found
+
+**Milestone Reached:** Diagnosis endpoint has been implement
+
+[3.0.0] setup: Initial commit of notification structure
