@@ -2,9 +2,8 @@ package notification
 
 import (
 	"encoding/json"
-	"fmt"
+	"main/debug"
 	"net/http"
-	"strconv"
 )
 
 type Notification struct {
@@ -16,16 +15,36 @@ type Notification struct {
 }
 
 func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
-	// Expects incoming body in terms of WebhookRegistration struct
+	//read input from client and branch if an error occurred
 	err := json.NewDecoder(r.Body).Decode(&notification)
 	if err != nil {
-		http.Error(w, "Something went wrong: "+err.Error(), http.StatusBadRequest)
+		debug.ErrorMessag.Update(
+			http.StatusBadRequest, 
+			"Notification.POST() -> Parsing data from client",
+			err.Error(),
+			"Wrong JSON format sent.",
+		)
+		debug.ErrorMessag.Print(w)
+		return
 	}
 	notifications = append(notifications, *notification)
-	// Note: Approach does not guarantee persistence or permanence of resource id (for CRUD)
-	//fmt.Fprintln(w, len(webhooks)-1)
-	fmt.Println("Webhook " + notification.URL + " has been registered.")
-	http.Error(w, strconv.Itoa(len(notifications)-1), http.StatusCreated)
+	//create feedback message to send to client
+	var feedback Feedback
+	feedback.update(
+		http.StatusCreated, 
+		"Webhook successfully created for '" + notification.URL + "'.",
+	)
+	err = feedback.print(w)
+	if err != nil {
+		debug.ErrorMessag.Update(
+			http.StatusInternalServerError, 
+			"Notification.POST() -> Sending feedback to client",
+			err.Error(),
+			"Unknown",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
 }
 
 func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
