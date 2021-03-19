@@ -159,3 +159,5 @@
 [3.0.2] setup: Initial commit of notificationGetOne structure
 
 [3.0.3] setup: Initial commit of webhook file in api package
+
+[3.1.0] development: Early version of MethodHandler with POST and GET functionality (copy from teachor for testing purposes)

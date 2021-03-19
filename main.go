@@ -4,6 +4,7 @@ import (
 	"log"
 	"main/api/cases"
 	"main/api/diag"
+	"main/api/notification"
 	"main/api/policy"
 	"net/http"
 	"os"
@@ -33,6 +34,8 @@ func main() {
 	http.HandleFunc("/corona/v1/policy/", policy.Handler)
 	//handle program diagnosis
 	http.HandleFunc("/corona/v1/diag/", diagnosis.Handler)
+	//handle webhook methods
+	http.HandleFunc("/corona/v1/notifications/", notification.MethodHandler)
 	//ends program if it can't open port
 	log.Fatal(http.ListenAndServe(":" + port, nil))
 }
