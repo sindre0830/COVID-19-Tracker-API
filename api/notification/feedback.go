@@ -9,11 +9,13 @@ import (
 type Feedback struct {
 	StatusCode int    `json:"status_code"`
 	Message    string `json:"message"`
+	ID		   string `json:"id"`
 }
 
-func (feedback *Feedback) update(status int, message string) {
+func (feedback *Feedback) update(status int, message string, id string) {
 	feedback.StatusCode = status
 	feedback.Message = message
+	feedback.ID = id
 }
 
 func (feedback *Feedback) print(w http.ResponseWriter) error {
