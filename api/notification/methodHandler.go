@@ -16,8 +16,6 @@ var SignatureKey = "X-SIGNATURE"
 //var Mac hash.Hash
 var Secret []byte
 
-var notifications []Notification
-
 func MethodHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 		case http.MethodPost:
@@ -72,6 +70,5 @@ func CallUrl(url string, content string) {
 		fmt.Println("Something is wrong with invocation response: " + err.Error())
 	}
 
-	fmt.Println("Webhook invoked. Received status code " + strconv.Itoa(res.StatusCode) +
-		" and body: " + string(response))
+	fmt.Println("Webhook invoked. Received status code " + strconv.Itoa(res.StatusCode) + " and body: " + string(response))
 }

@@ -171,3 +171,5 @@
 [3.4.0] development: Added RandomString function in the fun package
 
 [3.5.0] development: Added ID in feedback message
+
+[3.5.1] formatting: Restructuring notification package
