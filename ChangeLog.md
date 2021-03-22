@@ -177,3 +177,5 @@
 [3.6.0] development: Added country validation in Notification POST request
 
 [3.7.0] development: Added DELETE request in Notification
+
+[3.8.0] development: Removed 'field' attribute from Notification

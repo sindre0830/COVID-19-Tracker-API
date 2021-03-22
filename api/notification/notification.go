@@ -14,7 +14,6 @@ type Notification struct {
 	ID          string `json:"id"`
 	URL         string `json:"url"`
 	Timeout     int    `json:"timeout"`
-	Field       string `json:"field"`
 	Information string `json:"information"`
 	Country     string `json:"country"`
 	Trigger     string `json:"trigger"`
@@ -26,8 +25,7 @@ func (notification *Notification) update(notificationInput NotificationInput) {
 	notification.ID = fun.RandString(10)
 	notification.URL = notificationInput.URL
 	notification.Timeout = notificationInput.Timeout
-	notification.Field = notificationInput.Field
-	notification.Information = ""
+	notification.Information = notificationInput.Field
 	notification.Country = notificationInput.Country
 	notification.Trigger = notificationInput.Trigger
 	notifications[notification.ID] = *notification
