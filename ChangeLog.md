@@ -205,3 +205,5 @@
 [3.19.0] development: Removed garbage and added better error messages in Cases
 
 [3.20.0] development: Renamed global error struct and moved dynamic 'reason' in 'debug' package
+
+[3.21.0] development: Removed 'Updated' field from Policy structure

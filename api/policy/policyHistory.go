@@ -9,7 +9,7 @@ import (
 
 // PolicyHistory stores data about COVID policies for all countries between two dates.
 //
-// Functionality: Get, req, isEmpty, decreaseDate
+// Functionality: Get, req, isEmpty
 type PolicyHistory struct {
 	Scale     map[string]map[string]int `json:"scale"`
 	Countries []string                  `json:"countries"`
