@@ -26,7 +26,7 @@ type CasesHistory struct {
 	} `json:"All"`
 }
 // get will update CasesHistory based on input.
-func (casesHistory *CasesHistory) Get(target string, country string, startDate string, endDate string) (int, error) {
+func (casesHistory *CasesHistory) Get(target string, country string) (int, error) {
 	url := "https://covid-api.mmediagroup.fr/v1/history?country=" + country + "&status=" + target
 	//gets JSON output from API based on confirmed cases and branch if an error occurred
 	status, err := casesHistory.req(url)

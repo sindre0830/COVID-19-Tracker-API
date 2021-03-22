@@ -198,4 +198,6 @@
 
 [3.17.0] development: Requesting data will now give proper status code when timedout
 
-[3.17.1] development: Moved code out from casesHistory into cases to keep consistency
+[3.17.1] formatting: Moved code out from casesHistory into cases to keep consistency
+
+[3.18.0] development: Removed start- and end date from CasesHistory

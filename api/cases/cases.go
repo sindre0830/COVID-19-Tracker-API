@@ -150,13 +150,13 @@ func (cases *Cases) getTotal(country string) (int, error) {
 func (cases *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
 	var casesHistory CasesHistory
 	//get confirmed cases between two dates and branch if an error occurred
-	status, err := casesHistory.Get("Confirmed", country, startDate, endDate)
+	status, err := casesHistory.Get("Confirmed", country)
 	if err != nil {
 		return status, err
 	}
 	confirmed := casesHistory.All.Dates[endDate] - casesHistory.All.Dates[startDate]
 	//get recovered cases between two dates and branch if an error occurred
-	status, err = casesHistory.Get("Recovered", country, startDate, endDate)
+	status, err = casesHistory.Get("Recovered", country)
 	if err != nil {
 		return status, err
 	}
