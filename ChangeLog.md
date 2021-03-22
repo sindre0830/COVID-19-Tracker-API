@@ -173,3 +173,5 @@
 [3.5.0] development: Added ID in feedback message
 
 [3.5.1] formatting: Restructuring notification package
+
+[3.6.0] development: Added country validation in Notification POST request

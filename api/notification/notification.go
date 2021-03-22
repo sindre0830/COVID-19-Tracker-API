@@ -2,9 +2,11 @@ package notification
 
 import (
 	"encoding/json"
+	"main/api/cases"
 	"main/debug"
 	"main/fun"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 )
 
@@ -41,6 +43,30 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 			"Notification.POST() -> Parsing data from client",
 			err.Error(),
 			"Wrong JSON format sent.",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
+	var cases cases.Cases
+	req, err := http.NewRequest("GET", "http://localhost:8080/corona/v1/country/" + notificationInput.Country, nil)
+	if err != nil {
+		debug.ErrorMessag.Update(
+			http.StatusInternalServerError, 
+			"Notification.POST() -> Checking if country name is valid",
+			err.Error(),
+			"Unknown",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
+	recorder := httptest.NewRecorder()
+	cases.Handler(recorder, req)
+	if recorder.Code != http.StatusOK {
+		debug.ErrorMessag.Update(
+			http.StatusNotFound, 
+			"Notification.POST() -> Checking if country name is valid",
+			"country validation: country doesn't exist in our database",
+			"Not valid country name. Example 'Norway'",
 		)
 		debug.ErrorMessag.Print(w)
 		return
