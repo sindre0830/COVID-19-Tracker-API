@@ -25,26 +25,26 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//parse url and branch if an error occurred
 	country, scope, status, err := fun.ParseURL(r.URL)
 	if err != nil {
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			status, 
 			"Cases.Handler() -> ParseURL() -> Parsing URL",
 			err.Error(),
 			"URL format. Expected format: '.../country?scope=start_at-end_at'. Example: '.../norway?scope=2020-01-20-2021-02-01'",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 		return
 	}
 	//get alphacode and country name by RestCountry and branch if an error occurred
 	var countryNameDetails countryinfo.CountryNameDetails
 	status, err = countryNameDetails.Get(country)
 	if err != nil {
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			status, 
 			"Cases.Handler() -> CountryNameDetails.Get() -> Getting country details",
 			err.Error(),
 			"Country format. Expected format: '.../country'. Example: '.../norway'",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 		return
 	}
 	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, otherwise use RestCountry country name
@@ -53,13 +53,13 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		country = countryName
 		err := fun.ValidateCountry(country)
 		if err != nil {
-			debug.ErrorMessag.Update(
+			debug.ErrorMessage.Update(
 				http.StatusNotFound,
 				"Cases.Handler() -> ValidatingCountry() -> Checking if inputed country is valid",
 				err.Error(),
 				"Country format. Expected format: '.../country'. Example: '.../norway'",
 			)
-			debug.ErrorMessag.Print(w)
+			debug.ErrorMessage.Print(w)
 			return
 		}
 	} else {
@@ -72,13 +72,13 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		//validate scope and branch if an error occurred
 		err = fun.ValidateDates(scope)
 		if err != nil {
-			debug.ErrorMessag.Update(
+			debug.ErrorMessage.Update(
 				http.StatusBadRequest, 
 				"Cases.Handler() -> ValidateDates() -> Checking if inputed dates are valid",
 				err.Error(),
 				"Date format. Expected format: '...?scope=start_at-end_at'. Example: '...?2020-01-20-2021-02-01'",
 			)
-			debug.ErrorMessag.Print(w)
+			debug.ErrorMessage.Print(w)
 			return
 		}
 		startDate = scope[:10]
@@ -88,17 +88,13 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	status, err = cases.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
-		reason := "Unknown"
-		if status == http.StatusBadRequest {
-			reason = "Country format. Either country doesn't exist in our database or it's mistyped"
-		}
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			status, 
 			"Cases.Handler() -> Cases.get() -> Getting covid cases data",
 			err.Error(),
-			reason,
+			"Country format. Either country doesn't exist in our database or it's mistyped",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 		return
 	}
 	//set header to JSON
@@ -107,13 +103,13 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(cases)
 	//branch if something went wrong with output
 	if err != nil {
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			http.StatusInternalServerError, 
 			"Cases.Handler() -> Sending data to user",
 			err.Error(),
 			"Unknown",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 	}
 }
 // get will update Cases based on input.

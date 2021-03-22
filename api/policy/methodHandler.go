@@ -11,12 +11,12 @@ func MethodHandler(w http.ResponseWriter, r *http.Request) {
 			var policy Policy
 			policy.Handler(w, r)
 		default:
-			debug.ErrorMessag.Update(
+			debug.ErrorMessage.Update(
 				http.StatusMethodNotAllowed, 
 				"MethodHandler() -> Validating method",
 				"method validation: wrong method",
 				"Method not implemented.",
 			)
-			debug.ErrorMessag.Print(w)
+			debug.ErrorMessage.Print(w)
 	}
 }

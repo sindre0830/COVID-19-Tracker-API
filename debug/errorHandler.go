@@ -7,7 +7,7 @@ import (
 )
 
 // ErrorMessag is a global variable.
-var ErrorMessag Debug
+var ErrorMessage Debug
 // Debug structure keeps all error data.
 //
 // Functionality: Update, Print
@@ -22,7 +22,12 @@ func (debug *Debug) Update(status int, loc string, err string, reason string) {
 	debug.StatusCode = status
 	debug.Location = loc
 	debug.RawError = err
-	debug.PossibleReason = reason
+	//update reason if status code shows client error
+	if status == http.StatusBadRequest || status == http.StatusNotFound || status == http.StatusMethodNotAllowed {
+		debug.PossibleReason = reason
+	} else {
+		debug.PossibleReason = "Unknown"
+	}
 }
 // Print prints error msg to user and terminal.
 func (debug *Debug) Print(w http.ResponseWriter) {

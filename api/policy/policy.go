@@ -25,26 +25,26 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	//parse url and branch if an error occurred
 	country, scope, status, err := fun.ParseURL(r.URL)
 	if err != nil {
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			status, 
 			"Policy.Handler() -> Parsing URL",
 			err.Error(),
 			"URL format. Expected format: '.../country?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '.../norway?2020-01-20-2021-02-01'",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 		return
 	}
 	//get alphacode and countryname by RestCountry definition and branch if an error occurred
 	var countryNameDetails countryinfo.CountryNameDetails
 	status, err = countryNameDetails.Get(country)
 	if err != nil {
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			status, 
 			"Cases.Handler() -> Getting alphacode",
 			err.Error(),
 			"Country format. Expected format: '.../country'. Example: '.../norway'",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 		return
 	}
 	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, otherwise use RestCountry country name
@@ -56,13 +56,13 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	//validate country name and branch if an error occurred
 	err = fun.ValidateCountry(country)
 	if err != nil {
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			http.StatusNotFound,
 			"Policy.Handler() -> ValidatingCountry() -> Checking if inputted country is valid",
 			err.Error(),
 			"Country format. Expected format: '.../country'. Example: '.../norway'",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 		return
 	}
 	//set default start- and end date variables (total) and check if user inputted scope
@@ -72,13 +72,13 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 		//validate scope and branch if an error occurred
 		err = fun.ValidateDates(scope)
 		if err != nil {
-			debug.ErrorMessag.Update(
+			debug.ErrorMessage.Update(
 				http.StatusBadRequest, 
 				"Policy.Handler() -> Checking if inputed dates are valid",
 				err.Error(),
 				"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?2020-01-20-2021-02-01'",
 			)
-			debug.ErrorMessag.Print(w)
+			debug.ErrorMessage.Print(w)
 			return
 		}
 		startDate = scope[:10]
@@ -88,18 +88,13 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	status, err = policy.get(country, startDate, endDate)
 	//branch if there is an error
 	if err != nil {
-		//update reason if status code shows client error
-		reason := "Unknown"
-		if status == http.StatusBadRequest || status == http.StatusNotFound {
-			reason = "Country format. Either country doesn't exist in our database or it's mistyped"
-		}
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			status, 
 			"Policy.Handler() -> Policy.get() -> Getting covid policies data",
 			err.Error(),
-			reason,
+			"Country format. Either country doesn't exist in our database or it's mistyped",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 		return
 	}
 	//set header to JSON
@@ -108,13 +103,13 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(policy)
 	//branch if something went wrong with output
 	if err != nil {
-		debug.ErrorMessag.Update(
+		debug.ErrorMessage.Update(
 			http.StatusInternalServerError, 
 			"Policy.Handler() -> Sending data to user",
 			err.Error(),
 			"Unknown",
 		)
-		debug.ErrorMessag.Print(w)
+		debug.ErrorMessage.Print(w)
 	}
 }
 // get will update Policy based on input.
