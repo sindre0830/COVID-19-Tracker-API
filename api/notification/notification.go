@@ -102,6 +102,17 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessag.Print(w)
 		return
 	}
+	notificationInput.Trigger = strings.ToUpper(notificationInput.Trigger)
+	if notificationInput.Trigger != "ON_CHANGE" && notificationInput.Trigger != "ON_TIMEOUT" {
+		debug.ErrorMessag.Update(
+			http.StatusBadRequest,
+			"Notification.POST() -> Checking if trigger value is valid",
+			"trigger validation: trigger is not 'ON_CHANGE' or 'ON_TIMEOUT'",
+			"Not valid trigger. Example 'ON_TIMEOUT'",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
 	notification.update(notificationInput)
 	//create feedback message to send to client
 	var feedback Feedback

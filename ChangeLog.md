@@ -185,3 +185,5 @@
 [3.10.0] development: Added simple URL validation in Notification POST request
 
 [3.11.0] development: Added field validation in Notification POST request
+
+[3.12.0] development: Added trigger validation in Notification POST request
