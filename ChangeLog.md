@@ -207,3 +207,5 @@
 [3.20.0] development: Renamed global error struct and moved dynamic 'reason' in 'debug' package
 
 [3.21.0] development: Removed 'Updated' field from Policy structure
+
+[3.22.0] development: Fixed latency in Policy data and added fall back if StringencyActual isn't valid
