@@ -26,12 +26,11 @@ func main() {
 		port = "8080"
 	}
 	//declare structures with handlers
-	var policy policy.Policy
 	var diagnosis diag.Diagnosis
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.MethodHandler)
 	//handle corona policy
-	http.HandleFunc("/corona/v1/policy/", policy.Handler)
+	http.HandleFunc("/corona/v1/policy/", policy.MethodHandler)
 	//handle program diagnosis
 	http.HandleFunc("/corona/v1/diag/", diagnosis.Handler)
 	//handle webhook methods
