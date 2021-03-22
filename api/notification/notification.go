@@ -20,7 +20,7 @@ type Notification struct {
 	Trigger     string `json:"trigger"`
 }
 
-var notifications []Notification
+var notifications = map[string]Notification {}
 
 func (notification *Notification) update(notificationInput NotificationInput) {
 	notification.ID = fun.RandString(10)
@@ -30,7 +30,7 @@ func (notification *Notification) update(notificationInput NotificationInput) {
 	notification.Information = ""
 	notification.Country = notificationInput.Country
 	notification.Trigger = notificationInput.Trigger
-	notifications = append(notifications, *notification)
+	notifications[notification.ID] = *notification
 }
 
 func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
@@ -111,5 +111,50 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 	err := json.NewEncoder(w).Encode(notifications)
 	if err != nil {
 		http.Error(w, "Something went wrong: "+err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request) {
+	arrPath := strings.Split(r.URL.Path, "/")
+	//branch if there aren't enough elements in URL and return error
+	if len(arrPath) != 5 {
+		debug.ErrorMessag.Update(
+			http.StatusBadRequest, 
+			"Notification.DELETE() -> Checking length of URL",
+			"URL validation: either too many or too few arguments in URL path",
+			"URL format. Expected format: '.../id'. Example: '.../1ab24db3",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
+	id := arrPath[4]
+	if _, ok := notifications[id]; !ok {
+		debug.ErrorMessag.Update(
+			http.StatusNotFound, 
+			"Notification.DELETE() -> Checking if ID exist",
+			"ID validation: can't find ID",
+			"ID doesn't exist. Expected format: '.../id'. Example: '.../1ab24db3",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
+	delete(notifications, id)
+	//create feedback message to send to client
+	var feedback Feedback
+	feedback.update(
+		http.StatusOK, 
+		"Webhook successfully deleted",
+		id,
+	)
+	err := feedback.print(w)
+	if err != nil {
+		debug.ErrorMessag.Update(
+			http.StatusInternalServerError, 
+			"Notification.DELETE() -> Sending feedback to client",
+			err.Error(),
+			"Unknown",
+		)
+		debug.ErrorMessag.Print(w)
+		return
 	}
 }

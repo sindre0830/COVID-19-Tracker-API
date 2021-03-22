@@ -25,7 +25,8 @@ func MethodHandler(w http.ResponseWriter, r *http.Request) {
 			var notification Notification
 			notification.GET(w, r)
 		case http.MethodDelete:
-			//
+			var notification Notification
+			notification.DELETE(w, r)
 		default: http.Error(w, "Invalid method " + r.Method, http.StatusBadRequest)
 	}
 }
