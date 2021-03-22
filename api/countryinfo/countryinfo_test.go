@@ -18,7 +18,7 @@ func Test_CountryNameDetails_Get(t *testing.T) {
 		var countryNameDetails countryinfo.CountryNameDetails
 		status, _ := countryNameDetails.Get(country)
 		//branch if we get an unexpected answer
-		if status != expectedStatus {
+		if status != expectedStatus && status != http.StatusRequestTimeout {
 			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'", expectedStatus, status, country)
 		}
 	}

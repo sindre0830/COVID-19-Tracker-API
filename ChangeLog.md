@@ -195,3 +195,5 @@
 [3.15.0] development: Added method handler for 'policy' package
 
 [3.16.0] development: Added method handler for 'diag' package
+
+[3.17.0] development: Requesting data will now give proper status code when timedout

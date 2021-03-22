@@ -2,7 +2,8 @@ package api
 
 import (
 	"errors"
-	"io/ioutil"
+	"fmt"
+	"io"
 	"net/http"
 	"time"
 )
@@ -21,16 +22,17 @@ func RequestData(url string) ([]byte, int, error) {
 	//get response and branch if an error occurred
 	res, err := apiClient.Do(req)
 	if err != nil {
-		return nil, res.StatusCode, err
+		return nil, http.StatusRequestTimeout, err
 	}
 	if res.StatusCode != http.StatusOK {
 		err = errors.New("requesting data: status code is not OK")
 		return nil, res.StatusCode, err
 	}
 	//read output and branch if an error occurred
-	output, err := ioutil.ReadAll(res.Body)
+	output, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, http.StatusInternalServerError, err
+		fmt.Println("oioi")
+		return nil, http.StatusRequestTimeout, err
 	}
 	return output, http.StatusOK, nil
 }
