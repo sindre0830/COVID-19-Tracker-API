@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
+	"main/debug"
 	"net/http"
 	"strconv"
 )
@@ -27,7 +28,14 @@ func MethodHandler(w http.ResponseWriter, r *http.Request) {
 		case http.MethodDelete:
 			var notification Notification
 			notification.DELETE(w, r)
-		default: http.Error(w, "Invalid method " + r.Method, http.StatusBadRequest)
+		default:
+			debug.ErrorMessag.Update(
+				http.StatusMethodNotAllowed, 
+				"MethodHandler() -> Validating method",
+				"method validation: wrong method",
+				"Method not implemented.",
+			)
+			debug.ErrorMessag.Print(w)
 	}
 }
 
