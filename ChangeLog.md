@@ -201,3 +201,5 @@
 [3.17.1] formatting: Moved code out from casesHistory into cases to keep consistency
 
 [3.18.0] development: Removed start- and end date from CasesHistory
+
+[3.19.0] development: Removed garbage and added better error messages in Cases

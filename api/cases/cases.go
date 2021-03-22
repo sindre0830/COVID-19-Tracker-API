@@ -27,20 +27,20 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		debug.ErrorMessag.Update(
 			status, 
-			"Cases.Handler() -> Parsing URL",
+			"Cases.Handler() -> ParseURL() -> Parsing URL",
 			err.Error(),
-			"URL format. Expected format: '.../country?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '.../norway?2020-01-20-2021-02-01'",
+			"URL format. Expected format: '.../country?scope=start_at-end_at'. Example: '.../norway?scope=2020-01-20-2021-02-01'",
 		)
 		debug.ErrorMessag.Print(w)
 		return
 	}
-	//get alphacode and countryname by RestCountry definition and branch if an error occurred
+	//get alphacode and country name by RestCountry and branch if an error occurred
 	var countryNameDetails countryinfo.CountryNameDetails
 	status, err = countryNameDetails.Get(country)
 	if err != nil {
 		debug.ErrorMessag.Update(
 			status, 
-			"Cases.Handler() -> Getting alphacode",
+			"Cases.Handler() -> CountryNameDetails.Get() -> Getting country details",
 			err.Error(),
 			"Country format. Expected format: '.../country'. Example: '.../norway'",
 		)
@@ -49,21 +49,21 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, otherwise use RestCountry country name
 	if countryName, ok := dict.Country[countryNameDetails[0].Alpha3Code]; ok {
+		//set edgecase and branch if it is marked as invalid
 		country = countryName
+		err := fun.ValidateCountry(country)
+		if err != nil {
+			debug.ErrorMessag.Update(
+				http.StatusNotFound,
+				"Cases.Handler() -> ValidatingCountry() -> Checking if inputed country is valid",
+				err.Error(),
+				"Country format. Expected format: '.../country'. Example: '.../norway'",
+			)
+			debug.ErrorMessag.Print(w)
+			return
+		}
 	} else {
 		country = countryNameDetails[0].Name
-	}
-	//validate country name and branch if an error occurred
-	err = fun.ValidateCountry(country)
-	if err != nil {
-		debug.ErrorMessag.Update(
-			http.StatusNotFound,
-			"Cases.Handler() -> ValidatingCountry() -> Checking if inputed country is valid",
-			err.Error(),
-			"Country format. Expected format: '.../country'. Example: '.../norway'",
-		)
-		debug.ErrorMessag.Print(w)
-		return
 	}
 	//set default start- and end date variables (total) and check if user inputted scope
 	startDate := ""
@@ -74,9 +74,9 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			debug.ErrorMessag.Update(
 				http.StatusBadRequest, 
-				"Cases.Handler() -> Checking if inputed dates are valid",
+				"Cases.Handler() -> ValidateDates() -> Checking if inputed dates are valid",
 				err.Error(),
-				"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?2020-01-20-2021-02-01'",
+				"Date format. Expected format: '...?scope=start_at-end_at'. Example: '...?2020-01-20-2021-02-01'",
 			)
 			debug.ErrorMessag.Print(w)
 			return
@@ -142,8 +142,15 @@ func (cases *Cases) getTotal(country string) (int, error) {
 	if err != nil {
 		return status, err
 	}
-	//set data in cases
-	cases.update(casesTotal.All.Country, casesTotal.All.Continent, "total", casesTotal.All.Confirmed, casesTotal.All.Recovered, casesTotal.All.Population)
+	//set data
+	cases.update(
+		casesTotal.All.Country, 
+		casesTotal.All.Continent, 
+		"total", 
+		casesTotal.All.Confirmed, 
+		casesTotal.All.Recovered, 
+		casesTotal.All.Population,
+	)
 	return http.StatusOK, nil
 }
 // getHistory will get data between two dates.
@@ -161,7 +168,7 @@ func (cases *Cases) getHistory(country string, startDate string, endDate string)
 		return status, err
 	}
 	recovered := casesHistory.All.Dates[endDate] - casesHistory.All.Dates[startDate]
-	//set data in cases
+	//set data
 	cases.update(
 		casesHistory.All.Country, 
 		casesHistory.All.Continent, 
