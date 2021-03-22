@@ -7,6 +7,7 @@ import (
 	"main/fun"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 )
 
@@ -65,6 +66,17 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 			"Notification.POST() -> Checking if country name is valid",
 			"country validation: country doesn't exist in our database",
 			"Not valid country name. Example 'Norway'",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
+	_, err = url.ParseRequestURI(notificationInput.URL)
+	if err != nil {
+		debug.ErrorMessag.Update(
+			http.StatusNotFound,
+			"Notification.POST() -> Checking if URL is valid",
+			err.Error(),
+			"Not valid URL. Example 'http://google.com/'",
 		)
 		debug.ErrorMessag.Print(w)
 		return

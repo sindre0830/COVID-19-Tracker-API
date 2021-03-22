@@ -181,3 +181,5 @@
 [3.8.0] development: Removed 'field' attribute from Notification
 
 [3.9.0] development: Added GET all and GET specific requests in Notification
+
+[3.10.0] development: Added simple URL validation in Notification POST request
