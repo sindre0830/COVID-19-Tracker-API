@@ -193,3 +193,5 @@
 [3.14.0] development: Added method handler for 'cases' package
 
 [3.15.0] development: Added method handler for 'policy' package
+
+[3.16.0] development: Added method handler for 'diag' package
