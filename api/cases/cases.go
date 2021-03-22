@@ -149,13 +149,27 @@ func (cases *Cases) getTotal(country string) (int, error) {
 // getHistory will get data between two dates.
 func (cases *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
 	var casesHistory CasesHistory
-	//get cases between two dates and branch if an error occurred
-	confirmed, recovered, status, err := casesHistory.Get(country, startDate, endDate)
+	//get confirmed cases between two dates and branch if an error occurred
+	status, err := casesHistory.Get("Confirmed", country, startDate, endDate)
 	if err != nil {
 		return status, err
 	}
+	confirmed := casesHistory.All.Dates[endDate] - casesHistory.All.Dates[startDate]
+	//get recovered cases between two dates and branch if an error occurred
+	status, err = casesHistory.Get("Recovered", country, startDate, endDate)
+	if err != nil {
+		return status, err
+	}
+	recovered := casesHistory.All.Dates[endDate] - casesHistory.All.Dates[startDate]
 	//set data in cases
-	cases.update(casesHistory.All.Country, casesHistory.All.Continent, startDate + "-" + endDate, confirmed, recovered, casesHistory.All.Population)
+	cases.update(
+		casesHistory.All.Country, 
+		casesHistory.All.Continent, 
+		startDate + "-" + endDate, 
+		confirmed, 
+		recovered, 
+		casesHistory.All.Population,
+	)
 	return http.StatusOK, nil
 }
 // update sets new data in cases.

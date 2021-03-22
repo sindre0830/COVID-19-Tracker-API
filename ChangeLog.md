@@ -197,3 +197,5 @@
 [3.16.0] development: Added method handler for 'diag' package
 
 [3.17.0] development: Requesting data will now give proper status code when timedout
+
+[3.17.1] development: Moved code out from casesHistory into cases to keep consistency
