@@ -179,3 +179,5 @@
 [3.7.0] development: Added DELETE request in Notification
 
 [3.8.0] development: Removed 'field' attribute from Notification
+
+[3.9.0] development: Added GET all and GET specific requests in Notification

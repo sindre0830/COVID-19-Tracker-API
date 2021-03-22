@@ -103,12 +103,52 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessag.Print(w)
 		return
 	}
-	//update header to JSON and set HTTP code
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	err := json.NewEncoder(w).Encode(notifications)
-	if err != nil {
-		http.Error(w, "Something went wrong: "+err.Error(), http.StatusInternalServerError)
+	id := arrPath[4]
+	if id == "" {
+		//update header to JSON and set HTTP code
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		var output []Notification
+		for _, element := range notifications {
+			output = append(output, element)
+		}
+		err := json.NewEncoder(w).Encode(&output)
+		if err != nil {
+			debug.ErrorMessag.Update(
+				http.StatusInternalServerError, 
+				"Notification.GET() -> Sending data to user",
+				err.Error(),
+				"Unknown",
+			)
+			debug.ErrorMessag.Print(w)
+			return
+		}
+	} else {
+		if _, ok := notifications[id]; !ok {
+			debug.ErrorMessag.Update(
+				http.StatusNotFound, 
+				"Notification.GET() -> Checking if ID exist",
+				"ID validation: can't find ID",
+				"ID doesn't exist. Expected format: '.../id'. Example: '.../1ab24db3",
+			)
+			debug.ErrorMessag.Print(w)
+			return
+		}
+		//update header to JSON and set HTTP code
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		output := notifications[id]
+		err := json.NewEncoder(w).Encode(&output)
+		if err != nil {
+			debug.ErrorMessag.Update(
+				http.StatusInternalServerError, 
+				"Notification.GET() -> Sending data to user",
+				err.Error(),
+				"Unknown",
+			)
+			debug.ErrorMessag.Print(w)
+			return
+		}
 	}
 }
 
