@@ -3,6 +3,7 @@ package diag
 import (
 	"encoding/json"
 	"fmt"
+	"main/api/notification"
 	"main/debug"
 	"net/http"
 	"time"
@@ -37,7 +38,7 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//amount of registerd webhooks (not implemented yet)
-	diagnosis.Registered = 0
+	diagnosis.Registered = len(notification.Notifications)
 	diagnosis.Version = "v1"
 	//get uptime
 	diagnosis.Uptime = fmt.Sprintf("%f", diagnosis.getUptime())

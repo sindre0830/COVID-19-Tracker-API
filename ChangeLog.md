@@ -187,3 +187,5 @@
 [3.11.0] development: Added field validation in Notification POST request
 
 [3.12.0] development: Added trigger validation in Notification POST request
+
+[3.13.0] development: Added webhook length in Diagnosis Registered

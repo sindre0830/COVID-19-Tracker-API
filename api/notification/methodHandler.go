@@ -35,7 +35,7 @@ func ServiceHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		fmt.Println("Received POST request...")
-		for _, v := range notifications {
+		for _, v := range Notifications {
 			go CallUrl(v.URL, "Trigger event: Call to service endpoint with method " + v.Trigger)
 		}
 	default:

@@ -20,7 +20,7 @@ type Notification struct {
 	Trigger     string `json:"trigger"`
 }
 
-var notifications = map[string]Notification {}
+var Notifications = map[string]Notification {}
 
 func (notification *Notification) update(notificationInput NotificationInput) {
 	notification.ID = fun.RandString(10)
@@ -29,7 +29,7 @@ func (notification *Notification) update(notificationInput NotificationInput) {
 	notification.Information = notificationInput.Field
 	notification.Country = notificationInput.Country
 	notification.Trigger = notificationInput.Trigger
-	notifications[notification.ID] = *notification
+	Notifications[notification.ID] = *notification
 }
 
 func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
@@ -153,7 +153,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		var output []Notification
-		for _, element := range notifications {
+		for _, element := range Notifications {
 			output = append(output, element)
 		}
 		err := json.NewEncoder(w).Encode(&output)
@@ -168,7 +168,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		if _, ok := notifications[id]; !ok {
+		if _, ok := Notifications[id]; !ok {
 			debug.ErrorMessag.Update(
 				http.StatusNotFound, 
 				"Notification.GET() -> Checking if ID exist",
@@ -181,7 +181,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		//update header to JSON and set HTTP code
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		output := notifications[id]
+		output := Notifications[id]
 		err := json.NewEncoder(w).Encode(&output)
 		if err != nil {
 			debug.ErrorMessag.Update(
@@ -210,7 +210,7 @@ func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	id := arrPath[4]
-	if _, ok := notifications[id]; !ok {
+	if _, ok := Notifications[id]; !ok {
 		debug.ErrorMessag.Update(
 			http.StatusNotFound, 
 			"Notification.DELETE() -> Checking if ID exist",
@@ -220,7 +220,7 @@ func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request)
 		debug.ErrorMessag.Print(w)
 		return
 	}
-	delete(notifications, id)
+	delete(Notifications, id)
 	//create feedback message to send to client
 	var feedback Feedback
 	feedback.update(
