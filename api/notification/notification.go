@@ -73,10 +73,31 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 	_, err = url.ParseRequestURI(notificationInput.URL)
 	if err != nil {
 		debug.ErrorMessag.Update(
-			http.StatusNotFound,
+			http.StatusBadRequest,
 			"Notification.POST() -> Checking if URL is valid",
 			err.Error(),
 			"Not valid URL. Example 'http://google.com/'",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
+	if notificationInput.Timeout < 1 {
+		debug.ErrorMessag.Update(
+			http.StatusBadRequest,
+			"Notification.POST() -> Checking if timeout value is valid",
+			"timeout validation: value less than 1",
+			"Not valid timeout value. Example '3600'",
+		)
+		debug.ErrorMessag.Print(w)
+		return
+	}
+	notificationInput.Field = strings.ToLower(notificationInput.Field)
+	if notificationInput.Field != "confirmed" && notificationInput.Field != "stringency" {
+		debug.ErrorMessag.Update(
+			http.StatusBadRequest,
+			"Notification.POST() -> Checking if field is valid",
+			"field validation: field is not 'confirmed' or 'stringency'",
+			"Not valid field. Example 'stringency'",
 		)
 		debug.ErrorMessag.Print(w)
 		return
