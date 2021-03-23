@@ -253,3 +253,5 @@
 [4.14.0] development: Added proper status code when requesting an empty list of webhooks
 
 [4.14.1] setup: Removed garbage
+
+[4.14.2] formatting: Reformatted Diagnosis and added comments

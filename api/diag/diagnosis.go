@@ -2,31 +2,32 @@ package diag
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/api/notification"
 	"main/debug"
+	"math"
 	"net/http"
 	"time"
 )
 
-// StartTime is a variable declared at the start of the program to calculate uptime.
+// StartTime defines the time the service started.
 var StartTime time.Time
-// Diagnosis structure keeps version, uptime and status codes on used API's.
+
+// Diagnosis structure stores information about the REST service.
 //
-// Functionality: Handler, get, req, update, getUptime
+// Functionality: Handler, get, req, getUptime
 type Diagnosis struct {
 	Mmediagroupapi   int    `json:"mmediagroupapi"`
 	Covidtrackerapi  int    `json:"covidtrackerapi"`
 	Restcountriesapi int    `json:"restcountriesapi"`
 	Registered       int    `json:"registered"`
 	Version          string `json:"version"`
-	Uptime           string `json:"uptime"`
+	Uptime           int    `json:"uptime"`
 }
 
+// Handler will handle http request for REST service.
 func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
-	//status codes for used REST services
+	//get status codes for used REST services and branch if an error occured
 	status, err := diagnosis.get()
-	//branch if there is an error
 	if err != nil {
 		debug.ErrorMessage.Update(
 			status, 
@@ -37,16 +38,15 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//amount of registerd webhooks (not implemented yet)
+	//get the rest of the data for Diagnosis
 	diagnosis.Registered = len(notification.Notifications)
 	diagnosis.Version = "v1"
-	//get uptime
-	diagnosis.Uptime = fmt.Sprintf("%f", diagnosis.getUptime())
-	//set header to JSON
+	diagnosis.Uptime = diagnosis.getUptime()
+	//update header to JSON and set HTTP code
 	w.Header().Set("Content-Type", "application/json")
-	//send output to user
+	w.WriteHeader(http.StatusOK)
+	//send output to user and branch if an error occured
 	err = json.NewEncoder(w).Encode(diagnosis)
-	//branch if something went wrong with output
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError, 
@@ -58,37 +58,36 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// get will get data for structure.
 func (diagnosis *Diagnosis) get() (int, error) {
-	mmediagroupStatus, err := diagnosis.req("https://covid-api.mmediagroup.fr/v1/cases")
+	//request statuscodes for each REST serverice and branch if an error occured
+	var err error
+	diagnosis.Mmediagroupapi, err = diagnosis.req("https://covid-api.mmediagroup.fr/v1/cases")
 	if err != nil {
-		return mmediagroupStatus, err
+		return diagnosis.Mmediagroupapi, err
 	}
-	covidtrackerStatus, err := diagnosis.req("https://restcountries.eu/rest/v2/all")
+	diagnosis.Covidtrackerapi, err = diagnosis.req("https://restcountries.eu/rest/v2/all")
 	if err != nil {
-		return covidtrackerStatus, err
+		return diagnosis.Covidtrackerapi, err
 	}
-	restcountriesStatus, err := diagnosis.req("https://restcountries.eu/rest/v2/all")
+	diagnosis.Restcountriesapi, err = diagnosis.req("https://restcountries.eu/rest/v2/all")
 	if err != nil {
-		return restcountriesStatus, err
+		return diagnosis.Restcountriesapi, err
 	}
-	diagnosis.update(mmediagroupStatus, covidtrackerStatus, restcountriesStatus)
 	return http.StatusOK, nil
 }
 
-func (diagnosis *Diagnosis) req(url string) (int, error) {
+// req will request data from API.
+func (diagnosis Diagnosis) req(url string) (int, error) {
 	rsp, err := http.Get(url)
-	if err != nil {
+	//only interested in errors where the status code is not relevent (i.e. not API related)
+	if err != nil && rsp.StatusCode == http.StatusOK {
 		return rsp.StatusCode, err
 	}
 	return rsp.StatusCode, nil
 }
 
-func (diagnosis *Diagnosis) update(mmediagroupStatus int, covidtrackerStatus int, restcountriesStatus int) {
-	diagnosis.Mmediagroupapi = mmediagroupStatus
-	diagnosis.Covidtrackerapi = covidtrackerStatus
-	diagnosis.Restcountriesapi = restcountriesStatus
-}
-// getUptime calculates uptime based on start time and current time.
-func (diagnosis *Diagnosis) getUptime() float64 {
-	return time.Since(StartTime).Seconds()
+// getUptime calculates the difference between the start of the service and now.
+func (diagnosis Diagnosis) getUptime() int {
+	return int(math.Floor(time.Since(StartTime).Seconds()))
 }
