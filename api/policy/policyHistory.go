@@ -2,14 +2,13 @@ package policy
 
 import (
 	"encoding/json"
-	"errors"
 	"main/api"
 	"net/http"
 )
 
 // PolicyHistory stores data about COVID policies for all countries between two dates.
 //
-// Functionality: Get, req, isEmpty
+// Functionality: Get, req
 type PolicyHistory struct {
 	Scale     map[string]map[string]int `json:"scale"`
 	Countries []string                  `json:"countries"`
@@ -32,11 +31,6 @@ func (policyHistory *PolicyHistory) Get(startDate string, endDate string) (int, 
 	if err != nil {
 		return status, err
 	}
-	//branch if output from API is empty and return error
-	if policyHistory.isEmpty() {
-		err = errors.New("object validation: PolicyHistory is empty")
-		return http.StatusNotFound, err
-	}
 	return http.StatusOK, nil
 }
 // req will request from API based on URL.
@@ -52,8 +46,4 @@ func (policyHistory *PolicyHistory) req(url string) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusOK, nil
-}
-// isEmpty checks if PolicyHistory is empty.
-func (policyHistory *PolicyHistory) isEmpty() bool {
-    return policyHistory.Scale == nil
 }

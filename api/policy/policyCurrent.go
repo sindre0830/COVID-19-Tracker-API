@@ -2,14 +2,13 @@ package policy
 
 import (
 	"encoding/json"
-	"errors"
 	"main/api"
 	"net/http"
 )
 
 // PolicyCurrent stores data about current COVID policies based on a country.
 //
-// Functionality: Get, req, isEmpty
+// Functionality: Get, req
 type PolicyCurrent struct {
 	Policyactions []struct {
 		PolicyTypeCode          string       `json:"policy_type_code"`
@@ -27,7 +26,7 @@ type PolicyCurrent struct {
 		CountryCode      *interface{} `json:"country_code"`
 		Confirmed        *interface{} `json:"confirmed"`
 		Deaths           *interface{} `json:"deaths"`
-		StringencyActual *interface{} `json:"stringency_actual"`
+		StringencyActual float64 `json:"stringency_actual"`
 		Stringency       float64 `json:"stringency"`
 		Msg              *interface{} `json:"msg"`
 	} `json:"stringencyData"`
@@ -39,11 +38,6 @@ func (policyCurrent *PolicyCurrent) Get(country string, date string) (int, error
 	status, err := policyCurrent.req(url)
 	if err != nil {
 		return status, err
-	}
-	//branch if output from API is empty and return error
-	if policyCurrent.isEmpty() {
-		err = errors.New("policyCurrent validation: policyCurrent is empty")
-		return http.StatusNotFound, err
 	}
 	return http.StatusOK, nil
 }
@@ -60,8 +54,4 @@ func (policyCurrent *PolicyCurrent) req(url string) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusOK, nil
-}
-// isEmpty checks if PolicyCurrent is empty.
-func (policyCurrent *PolicyCurrent) isEmpty() bool {
-    return policyCurrent.Stringencydata.CountryCode == nil
 }

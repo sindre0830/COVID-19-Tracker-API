@@ -148,10 +148,19 @@ func (policy *Policy) getCurrent(country string) (int, error) {
 	if err != nil {
 		return status, err
 	}
+	//set stringency to StringencyActual and branch if it isn't filled and fall back to Stringency
+	//if neither fields are filled, set stringency to -1 as stated by the assignment
+	stringency := policyCurrent.Stringencydata.StringencyActual
+	if stringency == 0 {
+		stringency = policyCurrent.Stringencydata.Stringency
+		if stringency == 0 {
+			stringency = -1
+		}
+	}
 	//set data in cases
 	policy.update(
 		"total", 
-		policyCurrent.Stringencydata.Stringency, 
+		stringency, 
 		0,
 	)
 	return http.StatusOK, nil
@@ -185,6 +194,8 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 	if stringencyEnd != 0 {
 		trend = stringencyEnd - stringencyStart
 		trend = fun.LimitDecimals(trend)
+	} else {
+		stringencyEnd = -1
 	}
 	//set data in cases
 	policy.update(
@@ -209,14 +220,6 @@ func (policy *Policy) increaseDate(date string) (string, error) {
 	}
 	//add 10 days to inputted date as stated by the assignment
 	dateTime = dateTime.AddDate(0, 0, 10)
-	//get current time and decrease by 7 as stated by the API
-	currentTime := time.Now()
-	currentTime = currentTime.AddDate(0, 0, -7)
-	//get difference between current and inputted date and branch if inputted date will invalid invalid
-	duration := currentTime.Sub(dateTime)
-	if duration.Hours() < 0 {
-		dateTime = currentTime
-	}
 	date = dateTime.Format("2006-01-02")
 	return date, nil
 }
