@@ -6,6 +6,7 @@ import (
 	"main/debug"
 	"main/dict"
 	"main/fun"
+	"math"
 	"net/http"
 	"time"
 )
@@ -139,9 +140,9 @@ func (policy *Policy) get(country string, startDate string, endDate string) (int
 // getCurrent will get current available COVID policies.
 func (policy *Policy) getCurrent(country string) (int, error) {
 	var policyCurrent PolicyCurrent
-	//get current time and reduce by 7 days
+	//get current time and reduce by 10 days
 	currentTime := time.Now()
-	currentTime = currentTime.AddDate(0, 0, -7)
+	currentTime = currentTime.AddDate(0, 0, -10)
 	date := currentTime.Format("2006-01-02")
 	//get total cases and branch if an error occurred
 	status, err := policyCurrent.Get(country, date)
@@ -169,11 +170,11 @@ func (policy *Policy) getCurrent(country string) (int, error) {
 func (policy *Policy) getHistory(country string, startDate string, endDate string) (int, error) {
 	var policyHistory PolicyHistory
 	//increases both dates by 10 days and branch if an error occurred
-	increasedStartDate, err := policy.increaseDate(startDate)
+	increasedStartDate, err := policy.modifyDate(startDate)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	increasedEndDate, err := policy.increaseDate(endDate)
+	increasedEndDate, err := policy.modifyDate(endDate)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -211,15 +212,23 @@ func (policy *Policy) update(scope string, stringency float64, trend float64) {
 	policy.Stringency = stringency
 	policy.Trend = trend
 }
-// increaseDate increases the date by 10 days.
-func (policy *Policy) increaseDate(date string) (string, error) {
+// modifyDate increases the date by 10 days of current date if it is within the buffer.
+func (policy *Policy) modifyDate(date string) (string, error) {
 	//parse date to time format and branch if an error occurred
 	dateTime, err := time.Parse("2006-01-02", date)
 	if err != nil {
 		return "", err
 	}
-	//add 10 days to inputted date as stated by the assignment
-	dateTime = dateTime.AddDate(0, 0, 10)
+	//get current time and subtract inputted date
+	currentTime := time.Now()
+	diffTime := currentTime.Sub(dateTime)
+	//convert the difference to integer of days and branch if it's within the buffer
+	diffDays := int(math.Floor(diffTime.Hours() / 24.0))
+	if diffDays >= 0 && diffDays < 10 {
+		//set amount of days to subtract
+		diffDays = 10 - diffDays
+		dateTime = dateTime.AddDate(0, 0, -(diffDays))
+	}
 	date = dateTime.Format("2006-01-02")
 	return date, nil
 }

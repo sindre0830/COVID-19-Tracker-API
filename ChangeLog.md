@@ -238,3 +238,5 @@
 
 [4.7.0] development: Added Schedule loop
 
+[4.8.0] development: Fixed Policy to only remove days if it's within the buffer of 10 days
+

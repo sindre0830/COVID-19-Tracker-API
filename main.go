@@ -33,7 +33,7 @@ func main() {
 		port = "8080"
 	}
 	//schedule checks every second for possible webhooks to print to
-	go notification.Schedule()
+	//go notification.Schedule()
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.MethodHandler)
 	//handle corona policy
