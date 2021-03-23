@@ -213,3 +213,5 @@
 [3.23.0] development: Removed comprehensive checks in policy to give stringency -1 instead of error message
 
 [3.24.0] development: Fixed testing of policy after last commit
+
+[3.24.1] setup: Removed garbage file
