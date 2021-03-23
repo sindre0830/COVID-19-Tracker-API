@@ -227,3 +227,5 @@
 [4.2.0] development: Added 'Add' functionality to 'firebase' package
 
 [4.3.0] development: POST request in Notification adds data to firebase
+
+[4.4.0] development: Added simple Get function to firbase package

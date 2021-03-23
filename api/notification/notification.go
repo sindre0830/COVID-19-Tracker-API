@@ -2,6 +2,7 @@ package notification
 
 import (
 	"encoding/json"
+	"fmt"
 	"main/api/cases"
 	"main/debug"
 	"main/firebase"
@@ -160,6 +161,18 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
+	output, err := firebase.DB.Get()
+	if err != nil {
+		debug.ErrorMessage.Update(
+			http.StatusInternalServerError,
+			"Notification.POST() -> Database.Get() -> Getting data from database",
+			err.Error(),
+			"Unknown",
+		)
+		debug.ErrorMessage.Print(w)
+		return
+	}
+	fmt.Println(output)
 	id := arrPath[4]
 	if id == "" {
 		//update header to JSON and set HTTP code

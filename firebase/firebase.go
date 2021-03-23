@@ -5,6 +5,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -36,4 +37,20 @@ func (database *Database) Add(notification interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func (database *Database) Get() ([]map[string]interface{}, error) {
+	iter := database.Client.Collection("notification").Documents(database.Ctx)
+	var output []map[string]interface{}
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		} else if err != nil {
+			return nil, err
+		}
+		data := doc.Data()
+		output = append(output, data)
+	}
+	return output, nil
 }
