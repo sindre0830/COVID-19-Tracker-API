@@ -48,7 +48,7 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, otherwise use RestCountry country name
-	if countryName, ok := dict.Country[countryNameDetails[0].Alpha3Code]; ok {
+	if countryName, ok := dict.CountryEdgeCases[countryNameDetails[0].Alpha3Code]; ok {
 		country = countryName
 	} else {
 		country = countryNameDetails[0].Name

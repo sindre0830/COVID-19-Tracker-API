@@ -261,3 +261,5 @@
 [4.14.4] formatting: Reformatted 'countryinfo' package and added comments
 
 [4.14.5] formatting: Reformatted 'debug' package and added comments
+
+[4.14.6] formatting: Reformatted 'dict' package and added comments

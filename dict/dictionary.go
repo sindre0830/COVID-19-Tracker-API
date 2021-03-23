@@ -1,7 +1,7 @@
 package dict
 
-// Country stores edgecases.
-var Country = map[string]string{
+// CountryEdgeCases stores country name edge cases.
+var CountryEdgeCases = map[string]string {
 	"USA": "US",
 	"RUS": "Russia",
 	"UMI": "",
