@@ -158,10 +158,14 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 	}
 	id := arrPath[4]
 	if id == "" {
+		var output []Notification
+		if len(Notifications) == 0 {
+			http.Error(w, "", http.StatusNoContent)
+			return
+		}
 		//update header to JSON and set HTTP code
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		var output []Notification
 		for _, element := range Notifications {
 			output = append(output, element)
 		}
