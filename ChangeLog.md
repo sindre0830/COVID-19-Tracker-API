@@ -235,3 +235,6 @@
 [4.5.0] development: Fixed database Get function by setting notifications to be local
 
 [4.6.0] development: Added Delete function to Database
+
+[4.7.0] development: Added Schedule loop
+

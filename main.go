@@ -22,6 +22,7 @@ func init() {
 		defer notification.DB.Client.Close()
 		log.Fatalln(err)
 	}
+	notification.Ticker = time.NewTicker(time.Second * 1)
 }
 // Main program.
 func main() {
@@ -31,6 +32,8 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	//schedule checks every second for possible webhooks to print to
+	go notification.Schedule()
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.MethodHandler)
 	//handle corona policy
