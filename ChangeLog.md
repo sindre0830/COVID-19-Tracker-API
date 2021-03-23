@@ -251,3 +251,5 @@
 [4.13.0] development: Added functionality to ON_TIMEOUT and ON_CHANGE
 
 [4.14.0] development: Added proper status code when requesting an empty list of webhooks
+
+[4.14.1] setup: Removed garbage

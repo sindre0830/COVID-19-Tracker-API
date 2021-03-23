@@ -42,8 +42,6 @@ func main() {
 	http.HandleFunc("/corona/v1/diag/", diag.MethodHandler)
 	//handle webhook methods
 	http.HandleFunc("/corona/v1/notifications/", notification.MethodHandler)
-	//handle webhook methods
-	http.HandleFunc("/corona/v1/service/", notification.ServiceHandler)
 	//ends program if it can't open port
 	log.Fatal(http.ListenAndServe(":" + port, nil))
 }
