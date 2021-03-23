@@ -2,10 +2,8 @@ package notification
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/api/cases"
 	"main/debug"
-	"main/firebase"
 	"main/fun"
 	"net/http"
 	"net/http/httptest"
@@ -117,7 +115,7 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 	}
 	notification.update(notificationInput)
 	//add data to database and branch if an error occured
-	err = firebase.DB.Add(notification)
+	err = DB.Add(*notification)
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError,
@@ -161,7 +159,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	output, err := firebase.DB.Get()
+	err := DB.Get()
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError,
@@ -172,7 +170,6 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	fmt.Println(output)
 	id := arrPath[4]
 	if id == "" {
 		//update header to JSON and set HTTP code

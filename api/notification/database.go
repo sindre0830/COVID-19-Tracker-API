@@ -1,7 +1,8 @@
-package firebase
+package notification
 
 import (
 	"context"
+	"fmt"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -31,7 +32,7 @@ func (database *Database) Setup() error {
 	return nil
 }
 
-func (database *Database) Add(notification interface{}) error {
+func (database *Database) Add(notification Notification) error {
 	_, _, err := database.Client.Collection("notification").Add(database.Ctx, notification)
 	if err != nil {
 		return err
@@ -39,18 +40,32 @@ func (database *Database) Add(notification interface{}) error {
 	return nil
 }
 
-func (database *Database) Get() ([]map[string]interface{}, error) {
+func (database *Database) Get() error {
 	iter := database.Client.Collection("notification").Documents(database.Ctx)
-	var output []map[string]interface{}
+	var notification Notification
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
 			break
 		} else if err != nil {
-			return nil, err
+			return err
 		}
 		data := doc.Data()
-		output = append(output, data)
+		//convert data from interface and set in structure
+		str := fmt.Sprintf("%v", data["id"])
+		notification.ID = str
+		str = fmt.Sprintf("%v", data["url"])
+		notification.URL = str
+		num := data["timeout"].(int)
+		notification.Timeout = num
+		str = fmt.Sprintf("%v", data["information"])
+		notification.Information = str
+		str = fmt.Sprintf("%v", data["country"])
+		notification.Country = str
+		str = fmt.Sprintf("%v", data["trigger"])
+		notification.Trigger = str
+		//add strucutre to map
+		Notifications[notification.ID] = notification
 	}
-	return output, nil
+	return nil
 }

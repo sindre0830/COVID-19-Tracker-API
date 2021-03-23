@@ -6,7 +6,6 @@ import (
 	"main/api/diag"
 	"main/api/notification"
 	"main/api/policy"
-	"main/firebase"
 	"net/http"
 	"os"
 	"time"
@@ -18,9 +17,9 @@ func init() {
 	diag.StartTime = time.Now()
 	notification.Secret = []byte{1, 2, 3, 4, 5} // not a good secret!
 	//setup connection with firebase and branch if an error occured
-	err := firebase.DB.Setup()
+	err := notification.DB.Setup()
 	if err != nil {
-		defer firebase.DB.Client.Close()
+		defer notification.DB.Client.Close()
 		log.Fatalln(err)
 	}
 }

@@ -229,3 +229,5 @@
 [4.3.0] development: POST request in Notification adds data to firebase
 
 [4.4.0] development: Added simple Get function to firbase package
+
+[4.4.1] setup: Moved firebase package content into Notification package because of import cycle
