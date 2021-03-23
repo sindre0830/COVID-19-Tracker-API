@@ -259,3 +259,5 @@
 [4.14.3] formatting: Added comments to method handler for diag endpoint
 
 [4.14.4] formatting: Reformatted 'countryinfo' package and added comments
+
+[4.14.5] formatting: Reformatted 'debug' package and added comments

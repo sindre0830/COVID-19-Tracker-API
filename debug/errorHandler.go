@@ -6,9 +6,10 @@ import (
 	"net/http"
 )
 
-// ErrorMessag is a global variable.
+// ErrorMessage is used for all error handling in the program.
 var ErrorMessage Debug
-// Debug structure keeps all error data.
+
+// Debug structure stores information about errors.
 //
 // Functionality: Update, Print
 type Debug struct {
@@ -17,7 +18,8 @@ type Debug struct {
 	RawError   		 string `json:"raw_error"`
 	PossibleReason   string `json:"possible_reason"`
 }
-// Update adds new information to error msg.
+
+// Update sets new data in structure.
 func (debug *Debug) Update(status int, loc string, err string, reason string) {
 	debug.StatusCode = status
 	debug.Location = loc
@@ -29,18 +31,26 @@ func (debug *Debug) Update(status int, loc string, err string, reason string) {
 		debug.PossibleReason = "Unknown"
 	}
 }
-// Print prints error msg to user and terminal.
+
+// Print sends structure to client and console.
 func (debug *Debug) Print(w http.ResponseWriter) {
 	//update header to JSON and set HTTP code
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(debug.StatusCode)
-	//send error output to user
+	//send output to user and branch if an error occured
 	err := json.NewEncoder(w).Encode(debug)
-	//branch if something went wrong with output
 	if err != nil {
-		fmt.Println("ERROR encoding JSON in Debug.Print()", err)
+		fmt.Println("Error encoding JSON in Debug.Print()", err)
 		return
 	}
-	//send error output to console
-	fmt.Printf("\nError {\n\tstatus_code:\t\t%v,\n\tlocation:\t\t%s,\n\traw_error:\t\t%s,\n\tpossible_reason:\t%s\n}\n", debug.StatusCode, debug.Location, debug.RawError, debug.PossibleReason)
+	//send output to console
+	fmt.Printf(
+		"Error {\n" +
+		"    status_code:     %v,\n" +
+		"    location:        %s,\n" +
+		"    raw_error:       %s,\n" +
+		"    possible_reason: %s \n" +
+		"}\n", 
+		debug.StatusCode, debug.Location, debug.RawError, debug.PossibleReason,
+	)
 }
