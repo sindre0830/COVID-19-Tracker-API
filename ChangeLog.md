@@ -217,3 +217,5 @@
 [3.24.1] setup: Removed garbage file
 
 [3.24.2] setup: Added firebase key to gitignore
+
+[3.24.3] setup: Added firebase to go.mod and go.sum

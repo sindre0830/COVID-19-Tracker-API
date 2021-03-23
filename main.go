@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"main/api/cases"
 	"main/api/diag"
@@ -9,6 +10,9 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	firebase "firebase.google.com/go"
+	"google.golang.org/api/option"
 )
 
 // init runs once at startup.
@@ -25,6 +29,18 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	// Use a service account
+	ctx := context.Background()
+	sa := option.WithCredentialsFile("serviceAccountKey.json")
+	app, err := firebase.NewApp(ctx, nil, sa)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	client, err := app.Firestore(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer client.Close()
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.MethodHandler)
 	//handle corona policy
