@@ -222,4 +222,6 @@
 
 [4.0.3] setup: Added firebase to go.mod and go.sum
 
-[4.1.0] setup: Added firebase package and moved firebase init to it's own setup function
+[4.1.0] development: Added firebase package and moved firebase init to it's own setup function
+
+[4.2.0] development: Added 'Add' functionality to 'firebase' package
