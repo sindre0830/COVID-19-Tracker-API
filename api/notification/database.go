@@ -43,7 +43,10 @@ func (database *Database) Add(notification *Notification) error {
 		return err
 	}
 	notification.ID = key.ID
-	_, err = database.Client.Collection("notification").Doc(key.ID).Set(database.Ctx, notification)
+	_, err = database.Client.Collection("notification").Doc(key.ID).Update(database.Ctx, []firestore.Update {{
+		Path:  "ID",
+		Value: notification.ID,
+	}})
 	if err != nil {
 		return err
 	}

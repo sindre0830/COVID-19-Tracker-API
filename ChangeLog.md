@@ -243,3 +243,5 @@
 [4.9.0] development: Changed Notifications to be global again to be used in the Schedule loop
 
 [4.10.0] development: Notifications is now only updated at startup and during changes in database
+
+[4.11.0] development: Firebase only updates ID now on second interaction in Add
