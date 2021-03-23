@@ -37,17 +37,6 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	err = notification.DB.Get()
-	if err != nil {
-		debug.ErrorMessage.Update(
-			http.StatusInternalServerError,
-			"Diagnosis.Handler() -> Database.Get() -> Getting data from database",
-			err.Error(),
-			"Unknown",
-		)
-		debug.ErrorMessage.Print(w)
-		return
-	}
 	//amount of registerd webhooks (not implemented yet)
 	diagnosis.Registered = len(notification.Notifications)
 	diagnosis.Version = "v1"

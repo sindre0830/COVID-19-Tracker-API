@@ -241,3 +241,5 @@
 [4.8.0] development: Fixed Policy to only remove days if it's within the buffer of 10 days
 
 [4.9.0] development: Changed Notifications to be global again to be used in the Schedule loop
+
+[4.10.0] development: Notifications is now only updated at startup and during changes in database

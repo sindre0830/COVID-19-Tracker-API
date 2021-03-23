@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"main/api/cases"
 	"main/debug"
-	"main/fun"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -23,7 +22,6 @@ type Notification struct {
 }
 
 func (notification *Notification) update(notificationInput NotificationInput) {
-	notification.ID = fun.RandString(10)
 	notification.URL = notificationInput.URL
 	notification.Timeout = notificationInput.Timeout
 	notification.Information = notificationInput.Field
@@ -114,7 +112,7 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 	}
 	notification.update(notificationInput)
 	//add data to database and branch if an error occured
-	err = DB.Add(*notification)
+	err = DB.Add(notification)
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError,
@@ -154,17 +152,6 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 			"Notification.GET() -> Checking length of URL",
 			"URL validation: either too many or too few arguments in URL path",
 			"URL format. Expected format: '.../id'. Example: '.../1ab24db3",
-		)
-		debug.ErrorMessage.Print(w)
-		return
-	}
-	err := DB.Get()
-	if err != nil {
-		debug.ErrorMessage.Update(
-			http.StatusInternalServerError,
-			"Notification.GET() -> Database.Get() -> Getting data from database",
-			err.Error(),
-			"Unknown",
 		)
 		debug.ErrorMessage.Print(w)
 		return

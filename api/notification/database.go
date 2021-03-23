@@ -37,8 +37,13 @@ func (database *Database) Setup() error {
 	return nil
 }
 
-func (database *Database) Add(notification Notification) error {
-	_, _, err := database.Client.Collection("notification").Add(database.Ctx, notification)
+func (database *Database) Add(notification *Notification) error {
+	key, _, err := database.Client.Collection("notification").Add(database.Ctx, notification)
+	if err != nil {
+		return err
+	}
+	notification.ID = key.ID
+	_, err = database.Client.Collection("notification").Doc(key.ID).Set(database.Ctx, notification)
 	if err != nil {
 		return err
 	}
@@ -51,6 +56,8 @@ func (database *Database) Add(notification Notification) error {
 }
 
 func (database *Database) Get() error {
+	//clear webhooks
+	Notifications = make(map[string]Notification)
 	iter := database.Client.Collection("notification").Documents(database.Ctx)
 	var notification Notification
 	for {
@@ -68,7 +75,7 @@ func (database *Database) Get() error {
 		notification.Information = fmt.Sprintf("%v", data["Information"])
 		notification.Country = fmt.Sprintf("%v", data["Country"])
 		notification.Trigger = fmt.Sprintf("%v", data["Trigger"])
-		//add strucutre to map
+		//add webhooks to map
 		Notifications[notification.ID] = notification
 	}
 	return nil
