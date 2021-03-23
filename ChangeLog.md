@@ -247,3 +247,5 @@
 [4.11.0] development: Firebase only updates ID now on second interaction in Add
 
 [4.12.0] development: Added URL calling depending on schedule
+
+[4.13.0] development: Added functionality to ON_TIMEOUT and ON_CHANGE

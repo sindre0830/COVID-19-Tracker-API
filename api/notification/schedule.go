@@ -12,12 +12,13 @@ import (
 	"main/api/policy"
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"time"
 )
 
 var Ticker *time.Ticker
 var i int64
+var cachedCases = map[string]cases.Cases {}
+var cachedPolicies = map[string]policy.Policy {}
 
 func Schedule() {
 	done := make(chan bool)
@@ -37,10 +38,7 @@ func Schedule() {
 }
 
 func callURL(notification Notification) {
-	fmt.Println("Attempting invocation of url " + notification.URL + " ...")
-	
 	var output []byte 
-
 	if notification.Information == "stringency" {
 		url := "http://localhost:8080/corona/v1/policy/" + notification.Country
 		var policy policy.Policy
@@ -51,7 +49,15 @@ func callURL(notification Notification) {
 		}
 		recorder := httptest.NewRecorder()
 		policy.Handler(recorder, req)
-
+		if cachedPolicy, ok := cachedPolicies[notification.ID]; ok {
+			if cachedPolicy.Stringency != policy.Stringency {
+				cachedPolicies[notification.ID] = policy
+			} else if notification.Trigger == "ON_CHANGE" {
+				return
+			}
+		} else if notification.Trigger == "ON_CHANGE" {
+			cachedPolicies[notification.ID] = policy
+		}
 		output, err = json.Marshal(policy)
 		if err != nil {
 			fmt.Println(err)
@@ -67,7 +73,15 @@ func callURL(notification Notification) {
 		}
 		recorder := httptest.NewRecorder()
 		cases.Handler(recorder, req)
-
+		if cachedCase, ok := cachedCases[notification.ID]; ok {
+			if cachedCase.Confirmed != cases.Confirmed && cachedCase.Recovered != cases.Recovered {
+				cachedCases[notification.ID] = cases
+			} else if notification.Trigger == "ON_CHANGE" {
+				return
+			}
+		} else if notification.Trigger == "ON_CHANGE" {
+			cachedCases[notification.ID] = cases
+		}
 		output, err = json.Marshal(cases)
 		if err != nil {
 			fmt.Println(err)
@@ -96,10 +110,8 @@ func callURL(notification Notification) {
 	if err != nil {
 		fmt.Println("Error in HTTP request: " + err.Error())
 	}
-	response, err := ioutil.ReadAll(res.Body)
+	_, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println("Something is wrong with invocation response: " + err.Error())
 	}
-
-	fmt.Println("Webhook invoked. Received status code " + strconv.Itoa(res.StatusCode) + " and body: " + string(response))
 }
