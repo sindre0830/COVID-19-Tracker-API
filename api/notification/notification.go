@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"main/api/cases"
 	"main/debug"
+	"main/firebase"
 	"main/fun"
 	"net/http"
 	"net/http/httptest"
@@ -114,6 +115,18 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	notification.update(notificationInput)
+	//add data to database and branch if an error occured
+	err = firebase.DB.Add(notification)
+	if err != nil {
+		debug.ErrorMessage.Update(
+			http.StatusInternalServerError,
+			"Notification.POST() -> Database.Add() -> Adding data to database",
+			err.Error(),
+			"Unknown",
+		)
+		debug.ErrorMessage.Print(w)
+		return
+	}
 	//create feedback message to send to client
 	var feedback Feedback
 	feedback.update(

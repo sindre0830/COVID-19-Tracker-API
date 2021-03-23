@@ -2,7 +2,6 @@ package firebase
 
 import (
 	"context"
-	"main/api/notification"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -28,11 +27,10 @@ func (database *Database) Setup() error {
 	if err != nil {
 		return err
 	}
-	defer database.Client.Close()
 	return nil
 }
 
-func (database *Database) Add(notification notification.Notification) error {
+func (database *Database) Add(notification interface{}) error {
 	_, _, err := database.Client.Collection("notification").Add(database.Ctx, notification)
 	if err != nil {
 		return err

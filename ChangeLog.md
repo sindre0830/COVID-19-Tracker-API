@@ -225,3 +225,5 @@
 [4.1.0] development: Added firebase package and moved firebase init to it's own setup function
 
 [4.2.0] development: Added 'Add' functionality to 'firebase' package
+
+[4.3.0] development: POST request in Notification adds data to firebase

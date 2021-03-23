@@ -20,6 +20,7 @@ func init() {
 	//setup connection with firebase and branch if an error occured
 	err := firebase.DB.Setup()
 	if err != nil {
+		defer firebase.DB.Client.Close()
 		log.Fatalln(err)
 	}
 }
