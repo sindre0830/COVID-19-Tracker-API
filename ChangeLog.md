@@ -211,3 +211,5 @@
 [3.22.0] development: Fixed latency in Policy data and added fall back if StringencyActual isn't valid
 
 [3.23.0] development: Removed comprehensive checks in policy to give stringency -1 instead of error message
+
+[3.24.0] development: Fixed testing of policy after last commit

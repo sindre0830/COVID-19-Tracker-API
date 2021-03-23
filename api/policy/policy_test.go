@@ -46,8 +46,8 @@ func Test_PolicyHistory_Get(t *testing.T) {
 	//store expected data to check against
 	data := map[[2]string]int{
 		{"2021-01-01", "2021-03-01"}: http.StatusOK,
-		{"2022-01-01", "2022-03-01"}: http.StatusNotFound,
-		{"2016-01-01", "2016-03-01"}: http.StatusNotFound,
+		{"2022-01-01", "2022-03-01"}: http.StatusOK,
+		{"2016-01-01", "2016-03-01"}: http.StatusOK,
 	}
 	//iterate through map and check each key to expected element
 	for arrTestData, expectedStatus := range data {
@@ -64,7 +64,7 @@ func Test_PolicyCurrent_Get(t *testing.T) {
 	//store expected data to check against
 	data := map[[2]string]int{
 		{"", "2021-01-01"}:       http.StatusNotFound,
-		{"norway", "2021-01-01"}: http.StatusNotFound,
+		{"norway", "2021-01-01"}: http.StatusOK,
 		{"nor", "2021-01-01"}:    http.StatusOK,
 	}
 	//iterate through map and check each key to expected element
