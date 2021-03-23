@@ -245,3 +245,5 @@
 [4.10.0] development: Notifications is now only updated at startup and during changes in database
 
 [4.11.0] development: Firebase only updates ID now on second interaction in Add
+
+[4.12.0] development: Added URL calling depending on schedule
