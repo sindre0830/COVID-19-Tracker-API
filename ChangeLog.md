@@ -233,3 +233,5 @@
 [4.4.1] setup: Moved firebase package content into Notification package because of import cycle
 
 [4.5.0] development: Fixed database Get function by setting notifications to be local
+
+[4.6.0] development: Added Delete function to Database

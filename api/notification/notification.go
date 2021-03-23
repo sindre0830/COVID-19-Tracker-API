@@ -230,28 +230,17 @@ func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	id := arrPath[4]
-	notifications, err := DB.Get()
+	err := DB.Delete(id)
 	if err != nil {
 		debug.ErrorMessage.Update(
-			http.StatusInternalServerError,
-			"Notification.DELETE() -> Database.Get() -> Getting data from database",
+			http.StatusNotFound,
+			"Notification.DELETE() -> Database.Delete() -> Deleting data from database",
 			err.Error(),
-			"Unknown",
-		)
-		debug.ErrorMessage.Print(w)
-		return
-	}
-	if _, ok := notifications[id]; !ok {
-		debug.ErrorMessage.Update(
-			http.StatusNotFound, 
-			"Notification.DELETE() -> Checking if ID exist",
-			"ID validation: can't find ID",
 			"ID doesn't exist. Expected format: '.../id'. Example: '.../1ab24db3",
 		)
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	delete(notifications, id)
 	//create feedback message to send to client
 	var feedback Feedback
 	feedback.update(

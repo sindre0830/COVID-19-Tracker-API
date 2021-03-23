@@ -45,13 +45,13 @@ func (database *Database) Get() (map[string]Notification, error) {
 	var notifications = map[string]Notification {}
 	var notification Notification
 	for {
-		doc, err := iter.Next()
+		elem, err := iter.Next()
 		if err == iterator.Done {
 			break
 		} else if err != nil {
 			return nil, err
 		}
-		data := doc.Data()
+		data := elem.Data()
 		//convert data from interface and set in structure
 		notification.ID = fmt.Sprintf("%v", data["ID"])
 		notification.URL = fmt.Sprintf("%v", data["URL"])
@@ -63,4 +63,17 @@ func (database *Database) Get() (map[string]Notification, error) {
 		notifications[notification.ID] = notification
 	}
 	return notifications, nil
+}
+
+func (database *Database) Delete(id string) error {
+	iter := database.Client.Collection("notification").Where("ID", "==", id).Documents(database.Ctx)
+	elem, err := iter.Next()
+	if err != nil {
+		return err
+	}
+	_, err = elem.Ref.Delete(database.Ctx)
+	if err != nil {
+		return err
+	}
+	return nil
 }
