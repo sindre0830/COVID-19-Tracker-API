@@ -214,8 +214,12 @@
 
 [3.24.0] development: Fixed testing of policy after last commit
 
-[3.24.1] setup: Removed garbage file
+**Milestone Reached:** Local deployment of webhooks implemented
 
-[3.24.2] setup: Added firebase key to gitignore
+[4.0.1] setup: Removed garbage file
 
-[3.24.3] setup: Added firebase to go.mod and go.sum
+[4.0.2] setup: Added firebase key to gitignore
+
+[4.0.3] setup: Added firebase to go.mod and go.sum
+
+[4.1.0] setup: Added firebase package and moved firebase init to it's own setup function

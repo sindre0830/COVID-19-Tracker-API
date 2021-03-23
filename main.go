@@ -1,18 +1,15 @@
 package main
 
 import (
-	"context"
 	"log"
 	"main/api/cases"
 	"main/api/diag"
 	"main/api/notification"
 	"main/api/policy"
+	"main/firebase"
 	"net/http"
 	"os"
 	"time"
-
-	firebase "firebase.google.com/go"
-	"google.golang.org/api/option"
 )
 
 // init runs once at startup.
@@ -20,6 +17,11 @@ func init() {
 	//set varible to current time (for uptime)
 	diag.StartTime = time.Now()
 	notification.Secret = []byte{1, 2, 3, 4, 5} // not a good secret!
+	//setup connection with firebase and branch if an error occured
+	err := firebase.DB.Setup()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 // Main program.
 func main() {
@@ -29,18 +31,6 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	// Use a service account
-	ctx := context.Background()
-	sa := option.WithCredentialsFile("serviceAccountKey.json")
-	app, err := firebase.NewApp(ctx, nil, sa)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	client, err := app.Firestore(ctx)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer client.Close()
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.MethodHandler)
 	//handle corona policy
