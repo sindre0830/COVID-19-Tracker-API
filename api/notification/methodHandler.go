@@ -43,7 +43,18 @@ func ServiceHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		fmt.Println("Received POST request...")
-		for _, v := range Notifications {
+		notifications, err := DB.Get()
+		if err != nil {
+			debug.ErrorMessage.Update(
+				http.StatusInternalServerError,
+				"ServiceHandler() -> Database.Get() -> Getting data from database",
+				err.Error(),
+				"Unknown",
+			)
+			debug.ErrorMessage.Print(w)
+			return
+		}
+		for _, v := range notifications {
 			go CallUrl(v.URL, "Trigger event: Call to service endpoint with method " + v.Trigger)
 		}
 	default:

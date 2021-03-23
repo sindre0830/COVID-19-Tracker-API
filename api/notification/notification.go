@@ -14,13 +14,11 @@ import (
 type Notification struct {
 	ID          string `json:"id"`
 	URL         string `json:"url"`
-	Timeout     int    `json:"timeout"`
+	Timeout     int64  `json:"timeout"`
 	Information string `json:"information"`
 	Country     string `json:"country"`
 	Trigger     string `json:"trigger"`
 }
-
-var Notifications = map[string]Notification {}
 
 func (notification *Notification) update(notificationInput NotificationInput) {
 	notification.ID = fun.RandString(10)
@@ -29,7 +27,6 @@ func (notification *Notification) update(notificationInput NotificationInput) {
 	notification.Information = notificationInput.Field
 	notification.Country = notificationInput.Country
 	notification.Trigger = notificationInput.Trigger
-	Notifications[notification.ID] = *notification
 }
 
 func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
@@ -159,11 +156,11 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	err := DB.Get()
+	notifications, err := DB.Get()
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError,
-			"Notification.POST() -> Database.Get() -> Getting data from database",
+			"Notification.GET() -> Database.Get() -> Getting data from database",
 			err.Error(),
 			"Unknown",
 		)
@@ -176,7 +173,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		var output []Notification
-		for _, element := range Notifications {
+		for _, element := range notifications {
 			output = append(output, element)
 		}
 		err := json.NewEncoder(w).Encode(&output)
@@ -191,7 +188,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		if _, ok := Notifications[id]; !ok {
+		if _, ok := notifications[id]; !ok {
 			debug.ErrorMessage.Update(
 				http.StatusNotFound, 
 				"Notification.GET() -> Checking if ID exist",
@@ -204,7 +201,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		//update header to JSON and set HTTP code
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		output := Notifications[id]
+		output := notifications[id]
 		err := json.NewEncoder(w).Encode(&output)
 		if err != nil {
 			debug.ErrorMessage.Update(
@@ -233,7 +230,18 @@ func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	id := arrPath[4]
-	if _, ok := Notifications[id]; !ok {
+	notifications, err := DB.Get()
+	if err != nil {
+		debug.ErrorMessage.Update(
+			http.StatusInternalServerError,
+			"Notification.DELETE() -> Database.Get() -> Getting data from database",
+			err.Error(),
+			"Unknown",
+		)
+		debug.ErrorMessage.Print(w)
+		return
+	}
+	if _, ok := notifications[id]; !ok {
 		debug.ErrorMessage.Update(
 			http.StatusNotFound, 
 			"Notification.DELETE() -> Checking if ID exist",
@@ -243,7 +251,7 @@ func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request)
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	delete(Notifications, id)
+	delete(notifications, id)
 	//create feedback message to send to client
 	var feedback Feedback
 	feedback.update(
@@ -251,7 +259,7 @@ func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request)
 		"Webhook successfully deleted",
 		id,
 	)
-	err := feedback.print(w)
+	err = feedback.print(w)
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError, 

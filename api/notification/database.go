@@ -40,32 +40,27 @@ func (database *Database) Add(notification Notification) error {
 	return nil
 }
 
-func (database *Database) Get() error {
+func (database *Database) Get() (map[string]Notification, error) {
 	iter := database.Client.Collection("notification").Documents(database.Ctx)
+	var notifications = map[string]Notification {}
 	var notification Notification
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
 			break
 		} else if err != nil {
-			return err
+			return nil, err
 		}
 		data := doc.Data()
 		//convert data from interface and set in structure
-		str := fmt.Sprintf("%v", data["id"])
-		notification.ID = str
-		str = fmt.Sprintf("%v", data["url"])
-		notification.URL = str
-		num := data["timeout"].(int)
-		notification.Timeout = num
-		str = fmt.Sprintf("%v", data["information"])
-		notification.Information = str
-		str = fmt.Sprintf("%v", data["country"])
-		notification.Country = str
-		str = fmt.Sprintf("%v", data["trigger"])
-		notification.Trigger = str
+		notification.ID = fmt.Sprintf("%v", data["ID"])
+		notification.URL = fmt.Sprintf("%v", data["URL"])
+		notification.Timeout = data["Timeout"].(int64)
+		notification.Information = fmt.Sprintf("%v", data["Information"])
+		notification.Country = fmt.Sprintf("%v", data["Country"])
+		notification.Trigger = fmt.Sprintf("%v", data["Trigger"])
 		//add strucutre to map
-		Notifications[notification.ID] = notification
+		notifications[notification.ID] = notification
 	}
-	return nil
+	return notifications, nil
 }
