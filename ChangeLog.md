@@ -215,3 +215,5 @@
 [3.24.0] development: Fixed testing of policy after last commit
 
 [3.24.1] setup: Removed garbage file
+
+[3.24.2] setup: Added firebase key to gitignore
