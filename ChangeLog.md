@@ -257,3 +257,5 @@
 [4.14.2] formatting: Reformatted Diagnosis and added comments
 
 [4.14.3] formatting: Added comments to method handler for diag endpoint
+
+[4.14.4] formatting: Reformatted 'countryinfo' package and added comments

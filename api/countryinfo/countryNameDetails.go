@@ -6,14 +6,15 @@ import (
 	"net/http"
 )
 
-// CountryNameDetails stores country name details.
+// CountryNameDetails structure stores information about country name.
 //
-// CountryNameDetails: Get, req
+// Functionality: Get, req
 type CountryNameDetails []struct {
 	Name       string `json:"name"`
 	Alpha3Code string `json:"alpha3Code"`
 }
-// get will update CountryNameDetails based on input.
+
+// Get will get data for structure.
 func (countryNameDetails *CountryNameDetails) Get(country string) (int, error) {
 	url := "https://restcountries.eu/rest/v2/name/" + country + "?fields=name;alpha3Code"
 	//gets json output from API and branch if an error occurred
@@ -23,7 +24,8 @@ func (countryNameDetails *CountryNameDetails) Get(country string) (int, error) {
 	}
 	return http.StatusOK, nil
 }
-// req will request from API based on URL.
+
+// req will request data from API.
 func (countryNameDetails *CountryNameDetails) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	data, status, err := api.RequestData(url)
