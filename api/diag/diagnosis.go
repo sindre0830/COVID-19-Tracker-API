@@ -37,7 +37,7 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	notifications, err := notification.DB.Get()
+	err = notification.DB.Get()
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError,
@@ -49,7 +49,7 @@ func (diagnosis *Diagnosis) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//amount of registerd webhooks (not implemented yet)
-	diagnosis.Registered = len(notifications)
+	diagnosis.Registered = len(notification.Notifications)
 	diagnosis.Version = "v1"
 	//get uptime
 	diagnosis.Uptime = fmt.Sprintf("%f", diagnosis.getUptime())

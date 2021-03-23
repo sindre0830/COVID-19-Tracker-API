@@ -29,6 +29,11 @@ func (database *Database) Setup() error {
 	if err != nil {
 		return err
 	}
+	//update global variable
+	err = database.Get()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -37,19 +42,23 @@ func (database *Database) Add(notification Notification) error {
 	if err != nil {
 		return err
 	}
+	//update global variable
+	err = database.Get()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (database *Database) Get() (map[string]Notification, error) {
+func (database *Database) Get() error {
 	iter := database.Client.Collection("notification").Documents(database.Ctx)
-	var notifications = map[string]Notification {}
 	var notification Notification
 	for {
 		elem, err := iter.Next()
 		if err == iterator.Done {
 			break
 		} else if err != nil {
-			return nil, err
+			return err
 		}
 		data := elem.Data()
 		//convert data from interface and set in structure
@@ -60,9 +69,9 @@ func (database *Database) Get() (map[string]Notification, error) {
 		notification.Country = fmt.Sprintf("%v", data["Country"])
 		notification.Trigger = fmt.Sprintf("%v", data["Trigger"])
 		//add strucutre to map
-		notifications[notification.ID] = notification
+		Notifications[notification.ID] = notification
 	}
-	return notifications, nil
+	return nil
 }
 
 func (database *Database) Delete(id string) error {
@@ -72,6 +81,11 @@ func (database *Database) Delete(id string) error {
 		return err
 	}
 	_, err = elem.Ref.Delete(database.Ctx)
+	if err != nil {
+		return err
+	}
+	//update global variable
+	err = database.Get()
 	if err != nil {
 		return err
 	}

@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+var Notifications = map[string]Notification {}
+
 type Notification struct {
 	ID          string `json:"id"`
 	URL         string `json:"url"`
@@ -156,7 +158,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	notifications, err := DB.Get()
+	err := DB.Get()
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError,
@@ -173,7 +175,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		var output []Notification
-		for _, element := range notifications {
+		for _, element := range Notifications {
 			output = append(output, element)
 		}
 		err := json.NewEncoder(w).Encode(&output)
@@ -188,7 +190,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		if _, ok := notifications[id]; !ok {
+		if _, ok := Notifications[id]; !ok {
 			debug.ErrorMessage.Update(
 				http.StatusNotFound, 
 				"Notification.GET() -> Checking if ID exist",
@@ -201,7 +203,7 @@ func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 		//update header to JSON and set HTTP code
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		output := notifications[id]
+		output := Notifications[id]
 		err := json.NewEncoder(w).Encode(&output)
 		if err != nil {
 			debug.ErrorMessage.Update(
