@@ -116,7 +116,7 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 // get will get data for structure.
-func (policy Policy) get(country string, startDate string, endDate string) (int, error) {
+func (policy *Policy) get(country string, startDate string, endDate string) (int, error) {
 	//branch if scope parameter is used
 	if startDate == "" {
 		//get all available data and branch if an error occurred
@@ -203,7 +203,7 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 }
 
 // modifyDate increases the date by 10 days of current date if it is within the buffer.
-func (policy Policy) modifyDate(date string) (string, error) {
+func (policy *Policy) modifyDate(date string) (string, error) {
 	//parse date to time format and branch if an error occurred
 	dateTime, err := time.Parse("2006-01-02", date)
 	if err != nil {

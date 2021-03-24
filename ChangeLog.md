@@ -273,3 +273,5 @@
 [4.14.10] formatting: Added more comments to 'cases' package
 
 [4.14.11] formatting: Reformatted 'notification' package and added comments
+
+[4.15.0] formatting: Fixed structure functions not being pointers causing saving issues

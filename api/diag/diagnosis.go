@@ -78,7 +78,7 @@ func (diagnosis *Diagnosis) get() (int, error) {
 }
 
 // req will request data from API.
-func (diagnosis Diagnosis) req(url string) (int, error) {
+func (diagnosis *Diagnosis) req(url string) (int, error) {
 	rsp, err := http.Get(url)
 	//only interested in errors where the status code is not relevent (i.e. not API related)
 	if err != nil && rsp.StatusCode == http.StatusOK {
@@ -88,6 +88,6 @@ func (diagnosis Diagnosis) req(url string) (int, error) {
 }
 
 // getUptime calculates the difference between the start of the service and now.
-func (diagnosis Diagnosis) getUptime() int {
+func (diagnosis *Diagnosis) getUptime() int {
 	return int(math.Floor(time.Since(StartTime).Seconds()))
 }

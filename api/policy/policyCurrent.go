@@ -33,7 +33,7 @@ type PolicyCurrent struct {
 }
 
 // Get will get data for structure.
-func (policyCurrent PolicyCurrent) Get(country string, date string) (int, error) {
+func (policyCurrent *PolicyCurrent) Get(country string, date string) (int, error) {
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/actions/" + country + "/" + date
 	//gets json output from API and branch if an error occurred
 	status, err := policyCurrent.req(url)
@@ -44,7 +44,7 @@ func (policyCurrent PolicyCurrent) Get(country string, date string) (int, error)
 }
 
 // req will request data from API.
-func (policyCurrent PolicyCurrent) req(url string) (int, error) {
+func (policyCurrent *PolicyCurrent) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	data, status, err := api.RequestData(url)
 	if err != nil {

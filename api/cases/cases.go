@@ -22,7 +22,7 @@ type Cases struct {
 }
 
 // Handler will handle http request for REST service.
-func (cases Cases) Handler(w http.ResponseWriter, r *http.Request) {
+func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//parse url and branch if an error occurred
 	country, scope, status, err := fun.ParseURL(r.URL)
 	if err != nil {
@@ -115,7 +115,7 @@ func (cases Cases) Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 // get will get data for structure.
-func (cases Cases) get(country string, startDate string, endDate string) (int, error) {
+func (cases *Cases) get(country string, startDate string, endDate string) (int, error) {
 	//branch if scope parameter is used
 	if startDate == "" {
 		//get all available data and branch if an error occurred

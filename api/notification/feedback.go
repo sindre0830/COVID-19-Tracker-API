@@ -22,7 +22,7 @@ func (feedback *Feedback) update(status int, message string, id string) {
 }
 
 // print sends structure to client.
-func (feedback Feedback) print(w http.ResponseWriter) error {
+func (feedback *Feedback) print(w http.ResponseWriter) error {
 	//update header to JSON and set HTTP code
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(feedback.StatusCode)

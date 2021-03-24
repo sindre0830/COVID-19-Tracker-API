@@ -181,7 +181,7 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET handles a GET request from the http request.
-func (notification Notification) GET(w http.ResponseWriter, r *http.Request) {
+func (notification *Notification) GET(w http.ResponseWriter, r *http.Request) {
 	//split URL path by '/' and branch if there aren't enough elements
 	arrPath := strings.Split(r.URL.Path, "/")
 	if len(arrPath) != 5 {
@@ -254,7 +254,7 @@ func (notification Notification) GET(w http.ResponseWriter, r *http.Request) {
 }
 
 // DELETE handles a DELETE request from the http request.
-func (notification Notification) DELETE(w http.ResponseWriter, r *http.Request) {
+func (notification *Notification) DELETE(w http.ResponseWriter, r *http.Request) {
 	//split URL path by '/' and branch if there aren't enough elements
 	arrPath := strings.Split(r.URL.Path, "/")
 	if len(arrPath) != 5 {
