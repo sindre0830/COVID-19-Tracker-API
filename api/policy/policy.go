@@ -11,16 +11,17 @@ import (
 	"time"
 )
 
-// Policy stores data about COVID policies based on user input.
+// Policy structure stores information about COVID policies for a country.
 //
-// Functionality: Handler, get, getTotal, getHistory, update, decreaseDate
+// Functionality: Handler, get, getcurrent, getHistory, modifyDate
 type Policy struct {
 	Country    string  `json:"country"`
 	Scope      string  `json:"scope"`
 	Stringency float64 `json:"stringency"`
 	Trend	   float64 `json:"trend"`
 }
-// Handler will handle http request for COVID policies.
+
+// Handler will handle http request for REST service.
 func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 	//parse url and branch if an error occurred
 	country, scope, status, err := fun.ParseURL(r.URL)
@@ -34,37 +35,39 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//get alphacode and countryname by RestCountry definition and branch if an error occurred
+	//get alphacode and country name by RestCountry and branch if an error occurred
 	var countryNameDetails countryinfo.CountryNameDetails
 	status, err = countryNameDetails.Get(country)
 	if err != nil {
 		debug.ErrorMessage.Update(
 			status, 
-			"Cases.Handler() -> Getting alphacode",
+			"Policy.Handler() -> Getting alphacode",
 			err.Error(),
 			"Country format. Expected format: '.../country'. Example: '.../norway'",
 		)
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, otherwise use RestCountry country name
+	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, 
+	//otherwise use RestCountry country name
 	if countryName, ok := dict.CountryEdgeCases[countryNameDetails[0].Alpha3Code]; ok {
+		//set edgecase and branch if it is marked as invalid
 		country = countryName
+		err = fun.ValidateCountry(country)
+		if err != nil {
+			debug.ErrorMessage.Update(
+				http.StatusNotFound,
+				"Policy.Handler() -> ValidatingCountry() -> Checking if inputted country is valid",
+				err.Error(),
+				"Country format. Expected format: '.../country'. Example: '.../norway'",
+			)
+			debug.ErrorMessage.Print(w)
+			return
+		}
 	} else {
 		country = countryNameDetails[0].Name
 	}
-	//validate country name and branch if an error occurred
-	err = fun.ValidateCountry(country)
-	if err != nil {
-		debug.ErrorMessage.Update(
-			http.StatusNotFound,
-			"Policy.Handler() -> ValidatingCountry() -> Checking if inputted country is valid",
-			err.Error(),
-			"Country format. Expected format: '.../country'. Example: '.../norway'",
-		)
-		debug.ErrorMessage.Print(w)
-		return
-	}
+	policy.Country = country
 	//set default start- and end date variables (total) and check if user inputted scope
 	startDate := ""
 	endDate := ""
@@ -76,7 +79,7 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 				http.StatusBadRequest, 
 				"Policy.Handler() -> Checking if inputed dates are valid",
 				err.Error(),
-				"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?2020-01-20-2021-02-01'",
+				"Date format. Expected format: '...?start_at-end_at' (YYYY-MM-DD-YYYY-MM-DD). Example: '...?scope=2020-01-20-2021-02-01'",
 			)
 			debug.ErrorMessage.Print(w)
 			return
@@ -84,9 +87,8 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 		startDate = scope[:10]
 		endDate = scope[11:]
 	}
-	//get data based on country and scope
-	status, err = policy.get(country, startDate, endDate)
-	//branch if there is an error
+	//get data based on country and scope and branch if an error occured
+	status, err = policy.get(countryNameDetails[0].Alpha3Code, startDate, endDate)
 	if err != nil {
 		debug.ErrorMessage.Update(
 			status, 
@@ -97,11 +99,11 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//set header to JSON
+	//update header to JSON and set HTTP code
 	w.Header().Set("Content-Type", "application/json")
-	//send output to user
+	w.WriteHeader(http.StatusOK)
+	//send output to user and branch if an error occured
 	err = json.NewEncoder(w).Encode(policy)
-	//branch if something went wrong with output
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError, 
@@ -112,32 +114,27 @@ func (policy *Policy) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 	}
 }
-// get will update Policy based on input.
-func (policy *Policy) get(country string, startDate string, endDate string) (int, error) {
-	//get country name details and branch if an error occurred
-	var countryNameDetails countryinfo.CountryNameDetails
-	status, err := countryNameDetails.Get(country)
-	if err != nil {
-		return status, err
-	}
+
+// get will get data for structure.
+func (policy Policy) get(country string, startDate string, endDate string) (int, error) {
 	//branch if scope parameter is used
 	if startDate == "" {
 		//get all available data and branch if an error occurred
-		status, err := policy.getCurrent(countryNameDetails[0].Alpha3Code)
+		status, err := policy.getCurrent(country)
 		if err != nil {
 			return status, err
 		}
 	} else {
 		//get data between two dates and branch if an error occurred
-		status, err := policy.getHistory(countryNameDetails[0].Alpha3Code, startDate, endDate)
+		status, err := policy.getHistory(country, startDate, endDate)
 		if err != nil {
 			return status, err
 		}
 	}
-	policy.Country = country
 	return http.StatusOK, nil
 }
-// getCurrent will get current available COVID policies.
+
+// getCurrent will get current available data.
 func (policy *Policy) getCurrent(country string) (int, error) {
 	var policyCurrent PolicyCurrent
 	//get current time and reduce by 10 days
@@ -159,17 +156,16 @@ func (policy *Policy) getCurrent(country string) (int, error) {
 		}
 	}
 	//set data in cases
-	policy.update(
-		"total", 
-		stringency, 
-		0,
-	)
+	policy.Scope = "total"
+	policy.Stringency = stringency
+	policy.Trend = 0
 	return http.StatusOK, nil
 }
-// getHistory will get COVID policies between two dates.
+
+// getHistory will get data within scope.
 func (policy *Policy) getHistory(country string, startDate string, endDate string) (int, error) {
 	var policyHistory PolicyHistory
-	//increases both dates by 10 days and branch if an error occurred
+	//check if dates are within the 10 day buffer and modify accordingly, branch if an error occurred
 	increasedStartDate, err := policy.modifyDate(startDate)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -178,7 +174,7 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	//get total cases and branch if an error occurred
+	//get data within scope and branch if an error occurred
 	status, err := policyHistory.Get(increasedStartDate, increasedEndDate)
 	if err != nil {
 		return status, err
@@ -196,24 +192,18 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 		trend = stringencyEnd - stringencyStart
 		trend = fun.LimitDecimals(trend)
 	} else {
+		//if there is no data, set it to -1
 		stringencyEnd = -1
 	}
-	//set data in cases
-	policy.update(
-		startDate + "-" + endDate, 
-		stringencyEnd, 
-		trend,
-	)
+	//set data in structure
+	policy.Scope = startDate + "-" + endDate
+	policy.Stringency = stringencyEnd
+	policy.Trend = trend
 	return http.StatusOK, nil
 }
-// update sets new data in cases.
-func (policy *Policy) update(scope string, stringency float64, trend float64) {
-	policy.Scope = scope
-	policy.Stringency = stringency
-	policy.Trend = trend
-}
+
 // modifyDate increases the date by 10 days of current date if it is within the buffer.
-func (policy *Policy) modifyDate(date string) (string, error) {
+func (policy Policy) modifyDate(date string) (string, error) {
 	//parse date to time format and branch if an error occurred
 	dateTime, err := time.Parse("2006-01-02", date)
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// PolicyHistory stores data about COVID policies for all countries between two dates.
+// PolicyHistory structure stores data about COVID policies within scope for all countries.
 //
 // Functionality: Get, req
 type PolicyHistory struct {
@@ -23,7 +23,8 @@ type PolicyHistory struct {
 		StringencyLegacyDisp float64 `json:"stringency_legacy_disp"`
 	} `json:"data"`
 }
-// get will update PolicyHistory based on input.
+
+// Get will get data for structure.
 func (policyHistory *PolicyHistory) Get(startDate string, endDate string) (int, error) {
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/" + startDate + "/" + endDate
 	//gets json output from API and branch if an error occurred
@@ -33,7 +34,8 @@ func (policyHistory *PolicyHistory) Get(startDate string, endDate string) (int, 
 	}
 	return http.StatusOK, nil
 }
-// req will request from API based on URL.
+
+// req will request data from API.
 func (policyHistory *PolicyHistory) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	data, status, err := api.RequestData(url)

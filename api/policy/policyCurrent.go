@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// PolicyCurrent stores data about current COVID policies based on a country.
+// PolicyCurrent structure stores data about current COVID policies for all countries.
 //
 // Functionality: Get, req
 type PolicyCurrent struct {
@@ -31,8 +31,9 @@ type PolicyCurrent struct {
 		Msg              *interface{} `json:"msg"`
 	} `json:"stringencyData"`
 }
-// Get will update PolicyCurrent based on input.
-func (policyCurrent *PolicyCurrent) Get(country string, date string) (int, error) {
+
+// Get will get data for structure.
+func (policyCurrent PolicyCurrent) Get(country string, date string) (int, error) {
 	url := "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/actions/" + country + "/" + date
 	//gets json output from API and branch if an error occurred
 	status, err := policyCurrent.req(url)
@@ -41,8 +42,9 @@ func (policyCurrent *PolicyCurrent) Get(country string, date string) (int, error
 	}
 	return http.StatusOK, nil
 }
-// req will request from API based on URL.
-func (policyCurrent *PolicyCurrent) req(url string) (int, error) {
+
+// req will request data from API.
+func (policyCurrent PolicyCurrent) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	data, status, err := api.RequestData(url)
 	if err != nil {
