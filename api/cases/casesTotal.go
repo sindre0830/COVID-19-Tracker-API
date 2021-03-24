@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// CasesTotal stores all data about COVID cases for a country.
+// CasesTotal structure stores all data about COVID cases for a country.
 //
 // Functionality: get, req, isEmpty
 type CasesTotal struct {

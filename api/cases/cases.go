@@ -1,6 +1,7 @@
 package cases
 
 import (
+	"encoding/json"
 	"main/api/countryinfo"
 	"main/debug"
 	"main/dict"
@@ -47,7 +48,8 @@ func (cases Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, otherwise use RestCountry country name
+	//branch if countrycode is an edgecase and set custom country name as defined in the dictionary, 
+	//otherwise use RestCountry country name
 	if countryName, ok := dict.CountryEdgeCases[countryNameDetails[0].Alpha3Code]; ok {
 		//set edgecase and branch if it is marked as invalid
 		country = countryName
@@ -76,7 +78,7 @@ func (cases Cases) Handler(w http.ResponseWriter, r *http.Request) {
 				http.StatusBadRequest, 
 				"Cases.Handler() -> ValidateDates() -> Checking if inputed dates are valid",
 				err.Error(),
-				"Date format. Expected format: '...?scope=start_at-end_at'. Example: '...?2020-01-20-2021-02-01'",
+				"Date format. Expected format: '...?scope=start_at-end_at'. Example: '...?scope=2020-01-20-2021-02-01'",
 			)
 			debug.ErrorMessage.Print(w)
 			return
@@ -84,7 +86,7 @@ func (cases Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		startDate = scope[:10]
 		endDate = scope[11:]
 	}
-	//get data based on country and branch if an error occured
+	//get data based on country and scope and branch if an error occured
 	status, err = cases.get(country, startDate, endDate)
 	if err != nil {
 		debug.ErrorMessage.Update(
@@ -100,6 +102,7 @@ func (cases Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	//send output to user and branch if an error occured
+	err = json.NewEncoder(w).Encode(cases)
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError, 

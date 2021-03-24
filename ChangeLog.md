@@ -269,3 +269,5 @@
 [4.14.8] formatting: Reformatted 'cases' package and added comments
 
 [4.14.9] formatting: Reformatted 'policy' package and added comments
+
+[4.14.10] formatting: Added more comments to 'cases' package
