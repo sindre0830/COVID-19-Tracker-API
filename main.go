@@ -15,24 +15,27 @@ import (
 func init() {
 	//set varible to current time (for uptime)
 	diag.StartTime = time.Now()
-	notification.Secret = []byte{1, 2, 3, 4, 5} // not a good secret!
 	//setup connection with firebase and branch if an error occured
 	err := notification.DB.Setup()
 	if err != nil {
 		defer notification.DB.Client.Close()
 		log.Fatalln(err)
 	}
+	//set ticker to 1 second
 	notification.Ticker = time.NewTicker(time.Second * 1)
+	//set secret and signature key
+	notification.Secret = []byte{43, 123, 65, 232, 4, 42, 35, 234, 21, 122, 214}
+	notification.SignatureKey = "pMLAGX4azK5zj0uJEzXzaxCioJIisY"
 }
+
 // Main program.
 func main() {
-	//get port
+	//get port and branch if there isn't a port and set it to 8080
 	port := os.Getenv("PORT")
-	//branch if there isn't a port and set it to 8080
 	if port == "" {
 		port = "8080"
 	}
-	//schedule checks every second for possible webhooks to print to
+	//schedule checks every second for possible webhooks to execute
 	go notification.Schedule()
 	//handle corona cases
 	http.HandleFunc("/corona/v1/country/", cases.MethodHandler)
