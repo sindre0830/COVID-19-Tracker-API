@@ -263,3 +263,5 @@
 [4.14.5] formatting: Reformatted 'debug' package and added comments
 
 [4.14.6] formatting: Reformatted 'dict' package and added comments
+
+[4.14.7] formatting: Reformatted 'fun' package and added comments
