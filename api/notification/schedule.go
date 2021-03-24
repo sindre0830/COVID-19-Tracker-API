@@ -19,6 +19,10 @@ var Ticker *time.Ticker
 var i int64
 var cachedCases = map[string]cases.Cases {}
 var cachedPolicies = map[string]policy.Policy {}
+// Initialize signature (via init())
+var SignatureKey = "X-SIGNATURE"
+//var Mac hash.Hash
+var Secret []byte
 
 func Schedule() {
 	done := make(chan bool)

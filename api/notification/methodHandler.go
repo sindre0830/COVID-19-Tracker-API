@@ -5,11 +5,7 @@ import (
 	"net/http"
 )
 
-// Initialize signature (via init())
-var SignatureKey = "X-SIGNATURE"
-//var Mac hash.Hash
-var Secret []byte
-
+// MethodHandler handles the method of a http request.
 func MethodHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 		case http.MethodPost:
