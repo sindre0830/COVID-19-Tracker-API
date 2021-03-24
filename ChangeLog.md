@@ -72,15 +72,15 @@
 
 [0.23.0] development: Fixed Cases handler after last commit
 
-**Milestone Reached:** Cases endpoint has been implement
+[1.0.0] **Milestone Reached:** Cases endpoint has been implement
 
-[1.0.0] setup: Initial commit of policy structure
+[1.0.1] setup: Initial commit of policy structure
 
-[1.0.1] setup: Initial commit of policyHistory structure
+[1.0.2] setup: Initial commit of policyHistory structure
 
-[1.0.2] setup: Initial commit of policyCurrent structure
+[1.0.3] setup: Initial commit of policyCurrent structure
 
-[1.0.3] setup: Initial commit of countryCode structure
+[1.0.4] setup: Initial commit of countryCode structure
 
 [1.1.0] development: Added status code check in requestData to return statuscode even if no errors are thrown
 
@@ -134,9 +134,9 @@
 
 [1.19.0] development: Added dictionary to deal with country edge cases
 
-**Milestone Reached:** Policy endpoint has been implement
+[2.0.0] **Milestone Reached:** Policy endpoint has been implement
 
-[2.0.0] setup: Initial commit of diagnosis structure
+[2.0.1] setup: Initial commit of diagnosis structure
 
 [2.1.0] development: Added update function to diagnosis
 
@@ -150,15 +150,15 @@
 
 [2.6.0] development: Moved CountryNameDetails structure to it's own package and changed status code to not found if country name is not found
 
-**Milestone Reached:** Diagnosis endpoint has been implement
+[3.0.0] **Milestone Reached:** Diagnosis endpoint has been implement
 
-[3.0.0] setup: Initial commit of notification structure
+[3.0.1] setup: Initial commit of notification structure
 
-[3.0.1] setup: Initial commit of notificationGetAll structure
+[3.0.2] setup: Initial commit of notificationGetAll structure
 
-[3.0.2] setup: Initial commit of notificationGetOne structure
+[3.0.3] setup: Initial commit of notificationGetOne structure
 
-[3.0.3] setup: Initial commit of webhook file in api package
+[3.0.4] setup: Initial commit of webhook file in api package
 
 [3.1.0] development: Early version of MethodHandler with POST and GET functionality (copy from teachor for testing purposes)
 
@@ -214,7 +214,7 @@
 
 [3.24.0] development: Fixed testing of policy after last commit
 
-**Milestone Reached:** Local deployment of webhooks implemented
+[4.0.0] **Milestone Reached:** Local deployment of webhooks implemented
 
 [4.0.1] setup: Removed garbage file
 
@@ -274,6 +274,10 @@
 
 [4.14.11] formatting: Reformatted 'notification' package and added comments
 
-[4.15.0] formatting: Fixed structure functions not being pointers causing saving issues
+[4.15.0] development: Fixed structure functions not being pointers causing saving issues
 
 [4.15.1] formatting: Reformatted schedule in 'notification' package and added comments to 'main' package
+
+[5.0.0] **Milestone Reached:** External deployment of webhooks implemented
+
+[5.1.0] development: Added global URL value and changed it to SkyHigh IP

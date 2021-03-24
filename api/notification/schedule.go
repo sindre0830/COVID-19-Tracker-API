@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"main/api/cases"
 	"main/api/policy"
+	"main/dict"
 	"net/http"
 	"net/http/httptest"
 	"time"
@@ -55,7 +56,7 @@ func callURL(notification Notification) {
 	//check which field is requested and get data
 	var output []byte 
 	if notification.Information == "stringency" {
-		url := "http://localhost:8080/corona/v1/policy/" + notification.Country
+		url := dict.URL + "/corona/v1/policy/" + notification.Country
 		var policy policy.Policy
 		//create new GET request and branch if an error occurred
 		req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -88,7 +89,7 @@ func callURL(notification Notification) {
 			return
 		}
 	} else {
-		url := "http://localhost:8080/corona/v1/country/" + notification.Country
+		url := dict.URL + "/corona/v1/country/" + notification.Country
 		var cases cases.Cases
 		//create new GET request and branch if an error occurred
 		req, err := http.NewRequest(http.MethodGet, url, nil)

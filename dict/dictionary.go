@@ -6,3 +6,6 @@ var CountryEdgeCases = map[string]string {
 	"RUS": "Russia",
 	"UMI": "",
 }
+
+// URL stores valid URL
+var URL = "10.212.143.161"

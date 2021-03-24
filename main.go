@@ -6,6 +6,7 @@ import (
 	"main/api/diag"
 	"main/api/notification"
 	"main/api/policy"
+	"main/dict"
 	"net/http"
 	"os"
 	"time"
@@ -35,6 +36,8 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	//
+	dict.URL = dict.URL + ":" + port
 	//schedule checks every second for possible webhooks to execute
 	go notification.Schedule()
 	//handle corona cases
