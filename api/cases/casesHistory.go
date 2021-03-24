@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// CasesHistory stores historcial data about COVID cases.
+// CasesHistory structure stores historcial data about COVID cases for a country.
 //
 // Functionality: Get, req, isEmpty
 type CasesHistory struct {
@@ -25,10 +25,11 @@ type CasesHistory struct {
 		Dates             map[string]int `json:"dates"`
 	} `json:"All"`
 }
-// get will update CasesHistory based on input.
+
+// Get will get data for structure.
 func (casesHistory *CasesHistory) Get(target string, country string) (int, error) {
 	url := "https://covid-api.mmediagroup.fr/v1/history?country=" + country + "&status=" + target
-	//gets JSON output from API based on confirmed cases and branch if an error occurred
+	//gets json output from API and branch if an error occurred
 	status, err := casesHistory.req(url)
 	if err != nil {
 		return status, err
@@ -40,7 +41,8 @@ func (casesHistory *CasesHistory) Get(target string, country string) (int, error
 	}
 	return http.StatusOK, nil
 }
-// req will request from API based on URL.
+
+// req will request data from API.
 func (casesHistory *CasesHistory) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	output, status, err := api.RequestData(url)
@@ -54,7 +56,8 @@ func (casesHistory *CasesHistory) req(url string) (int, error) {
 	}
 	return http.StatusOK, nil
 }
-// isEmpty checks if CasesHistory is empty.
+
+// isEmpty checks if structure is empty.
 func (casesHistory *CasesHistory) isEmpty() bool {
     return casesHistory.All.Country == ""
 }

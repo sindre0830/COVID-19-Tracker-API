@@ -10,7 +10,7 @@ import (
 
 func Test_Cases_Handler(t *testing.T) {
 	//store expected data to check against
-	data := map[string]int{
+	testData := map[string]int{
 		//test path
 		"http://localhost:8080/corona/v1/country/":        http.StatusNotFound,
 		"http://localhost:8080/corona/v1/country/norway/": http.StatusBadRequest,
@@ -26,25 +26,25 @@ func Test_Cases_Handler(t *testing.T) {
 		"http://localhost:8080/corona/v1/country/norway?scope=2020-01-01-2021-01-01?abc=something": http.StatusBadRequest,
 	}
 	//iterate through map and check each key to expected element
-	for url, expectedStatus := range data {
+	for test, expectedStatus := range testData {
 		var cases cases.Cases
-		req, err := http.NewRequest("GET", url, nil)
+		req, err := http.NewRequest("GET", test, nil)
 		if err != nil {
 			fmt.Println("Error creating HTTP request in Test_casesHandler")
 			return
 		}
 		recorder := httptest.NewRecorder()
 		cases.Handler(recorder, req)
-		//branch if we get an unexpected answer
+		//branch if we get an unexpected answer that is not timed out
 		if recorder.Code != expectedStatus && recorder.Code != http.StatusRequestTimeout {
-			t.Errorf("Expected '%v' but got '%v'. Tested: %v", expectedStatus, recorder.Code, url)
+			t.Errorf("Expected '%v' but got '%v'. Tested: %v", expectedStatus, recorder.Code, test)
 		}
 	}
 }
 
 func Test_CasesHistory_Get(t *testing.T) {
 	//store expected data to check against
-	data := map[[2]string]int{
+	testData := map[[2]string]int{
 		{"Confirmed", "Norway"}: http.StatusOK,
 		{"Confirmed", "Norway"}: http.StatusOK,
 		{"Confirmed", "Norway"}: http.StatusOK,
@@ -53,19 +53,19 @@ func Test_CasesHistory_Get(t *testing.T) {
 		{"Confirmed", "US"}:     http.StatusOK,
 	}
 	//iterate through map and check each key to expected element
-	for arrTestData, expectedStatus := range data {
+	for test, expectedStatus := range testData {
 		var casesHistory cases.CasesHistory
-		status, _ := casesHistory.Get(arrTestData[0], arrTestData[1])
-		//branch if we get an unexpected answer
+		status, _ := casesHistory.Get(test[0], test[1])
+		//branch if we get an unexpected answer that is not timed out
 		if status != expectedStatus && status != http.StatusRequestTimeout {
-			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, arrTestData)
+			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, test)
 		}
 	}
 }
 
 func Test_CasesTotal_Get(t *testing.T) {
 	//store expected data to check against
-	data := map[string]int{
+	testData := map[string]int{
 		"Norway": http.StatusOK,
 		"norway": http.StatusBadRequest,
 		"nor": http.StatusBadRequest,
@@ -74,12 +74,12 @@ func Test_CasesTotal_Get(t *testing.T) {
 		"Us": http.StatusBadRequest,
 	}
 	//iterate through map and check each key to expected element
-	for testData, expectedStatus := range data {
+	for test, expectedStatus := range testData {
 		var casesTotal cases.CasesTotal
-		status, _ := casesTotal.Get(testData)
-		//branch if we get an unexpected answer
+		status, _ := casesTotal.Get(test)
+		//branch if we get an unexpected answer that is not timed out
 		if status != expectedStatus && status != http.StatusRequestTimeout {
-			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, testData)
+			t.Errorf("Expected '%v' but got '%v'. Tested: '%v'.", expectedStatus, status, test)
 		}
 	}
 }

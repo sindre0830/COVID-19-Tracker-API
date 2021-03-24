@@ -1,7 +1,6 @@
 package cases
 
 import (
-	"encoding/json"
 	"main/api/countryinfo"
 	"main/debug"
 	"main/dict"
@@ -9,9 +8,9 @@ import (
 	"net/http"
 )
 
-// Cases stores data about COVID cases based on user input.
+// Cases structure stores information about COIVD cases for a country.
 //
-// Functionality: Handler, get, getTotal, getHistory, update
+// Functionality: Handler, get, getTotal, getHistory
 type Cases struct {
 	Country              string  `json:"country"`
 	Continent            string  `json:"continent"`
@@ -20,8 +19,9 @@ type Cases struct {
 	Recovered            int     `json:"recovered"`
 	PopulationPercentage float64 `json:"population_percentage"`
 }
-// Handler will handle http request for COVID cases.
-func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
+
+// Handler will handle http request for REST service.
+func (cases Cases) Handler(w http.ResponseWriter, r *http.Request) {
 	//parse url and branch if an error occurred
 	country, scope, status, err := fun.ParseURL(r.URL)
 	if err != nil {
@@ -84,9 +84,8 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		startDate = scope[:10]
 		endDate = scope[11:]
 	}
-	//get data based on country and scope
+	//get data based on country and branch if an error occured
 	status, err = cases.get(country, startDate, endDate)
-	//branch if there is an error
 	if err != nil {
 		debug.ErrorMessage.Update(
 			status, 
@@ -97,11 +96,10 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//set header to JSON
+	//update header to JSON and set HTTP code
 	w.Header().Set("Content-Type", "application/json")
-	//send output to user
-	err = json.NewEncoder(w).Encode(cases)
-	//branch if something went wrong with output
+	w.WriteHeader(http.StatusOK)
+	//send output to user and branch if an error occured
 	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusInternalServerError, 
@@ -112,8 +110,9 @@ func (cases *Cases) Handler(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 	}
 }
-// get will update Cases based on input.
-func (cases *Cases) get(country string, startDate string, endDate string) (int, error) {
+
+// get will get data for structure.
+func (cases Cases) get(country string, startDate string, endDate string) (int, error) {
 	//branch if scope parameter is used
 	if startDate == "" {
 		//get all available data and branch if an error occurred
@@ -122,7 +121,7 @@ func (cases *Cases) get(country string, startDate string, endDate string) (int, 
 			return status, err
 		}
 	} else {
-		//get data between two dates and branch if an error occurred
+		//get data between within scope and branch if an error occurred
 		status, err := cases.getHistory(country, startDate, endDate)
 		if err != nil {
 			return status, err
@@ -130,6 +129,7 @@ func (cases *Cases) get(country string, startDate string, endDate string) (int, 
 	}
 	return http.StatusOK, nil
 }
+
 // getTotal will get all available data.
 func (cases *Cases) getTotal(country string) (int, error) {
 	var casesTotal CasesTotal
@@ -138,18 +138,17 @@ func (cases *Cases) getTotal(country string) (int, error) {
 	if err != nil {
 		return status, err
 	}
-	//set data
-	cases.update(
-		casesTotal.All.Country, 
-		casesTotal.All.Continent, 
-		"total", 
-		casesTotal.All.Confirmed, 
-		casesTotal.All.Recovered, 
-		casesTotal.All.Population,
-	)
+	//set data in structure
+	cases.Country = casesTotal.All.Country
+	cases.Continent = casesTotal.All.Continent
+	cases.Scope = "total"
+	cases.Confirmed = casesTotal.All.Confirmed
+	cases.Recovered = casesTotal.All.Recovered
+	cases.PopulationPercentage = fun.LimitDecimals(float64(casesTotal.All.Confirmed) / float64(casesTotal.All.Population))
 	return http.StatusOK, nil
 }
-// getHistory will get data between two dates.
+
+// getHistory will get data within scope.
 func (cases *Cases) getHistory(country string, startDate string, endDate string) (int, error) {
 	var casesHistory CasesHistory
 	//get confirmed cases between two dates and branch if an error occurred
@@ -164,23 +163,12 @@ func (cases *Cases) getHistory(country string, startDate string, endDate string)
 		return status, err
 	}
 	recovered := casesHistory.All.Dates[endDate] - casesHistory.All.Dates[startDate]
-	//set data
-	cases.update(
-		casesHistory.All.Country, 
-		casesHistory.All.Continent, 
-		startDate + "-" + endDate, 
-		confirmed, 
-		recovered, 
-		casesHistory.All.Population,
-	)
-	return http.StatusOK, nil
-}
-// update sets new data in cases.
-func (cases *Cases) update(country string, continent string, scope string, confirmed int, recovered int, population int) {
-	cases.Country = country
-	cases.Continent = continent
-	cases.Scope = scope
+	//set data in structure
+	cases.Country = casesHistory.All.Country
+	cases.Continent = casesHistory.All.Continent
+	cases.Scope = startDate + "-" + endDate
 	cases.Confirmed = confirmed
 	cases.Recovered = recovered
-	cases.PopulationPercentage = fun.LimitDecimals(float64(confirmed) / float64(population))
+	cases.PopulationPercentage = fun.LimitDecimals(float64(confirmed) / float64(casesHistory.All.Population))
+	return http.StatusOK, nil
 }

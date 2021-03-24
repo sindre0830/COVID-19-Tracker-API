@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// CasesTotal stores all data about COVID cases.
+// CasesTotal stores all data about COVID cases for a country.
 //
 // Functionality: get, req, isEmpty
 type CasesTotal struct {
@@ -30,7 +30,8 @@ type CasesTotal struct {
 		Updated           string       `json:"updated"`
 	} `json:"all"`
 }
-// get will update CasesTotal based on input.
+
+// Get will get data for structure.
 func (casesTotal *CasesTotal) Get(country string) (int, error) {
 	url := "https://covid-api.mmediagroup.fr/v1/cases?country=" + country
 	//gets json output from API and branch if an error occurred
@@ -45,7 +46,8 @@ func (casesTotal *CasesTotal) Get(country string) (int, error) {
 	}
 	return http.StatusOK, nil
 }
-// req will request from API based on URL.
+
+// req will request data from API.
 func (casesTotal *CasesTotal) req(url string) (int, error) {
 	//gets raw data from API and branch if an error occurred
 	data, status, err := api.RequestData(url)
@@ -59,7 +61,8 @@ func (casesTotal *CasesTotal) req(url string) (int, error) {
 	}
 	return http.StatusOK, nil
 }
-// isEmpty checks if CasesTotal is empty.
+
+// isEmpty checks if structure is empty.
 func (casesTotal *CasesTotal) isEmpty() bool {
     return casesTotal.All.Country == ""
 }

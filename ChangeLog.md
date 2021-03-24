@@ -265,3 +265,5 @@
 [4.14.6] formatting: Reformatted 'dict' package and added comments
 
 [4.14.7] formatting: Reformatted 'fun' package and added comments
+
+[4.14.8] formatting: Reformatted 'cases' package and added comments
