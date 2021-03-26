@@ -315,3 +315,5 @@
 [6.2.1] formatting: Updated 'Usage' in README
 
 [6.2.2] formatting: Updated 'Notes' in README
+
+[6.3.0] development: Converted more types to interfaces to deal with API sending different types depending on country

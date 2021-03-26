@@ -26,8 +26,8 @@ type PolicyCurrent struct {
 		CountryCode      *interface{} `json:"country_code"`
 		Confirmed        *interface{} `json:"confirmed"`
 		Deaths           *interface{} `json:"deaths"`
-		StringencyActual float64 `json:"stringency_actual"`
-		Stringency       float64 `json:"stringency"`
+		StringencyActual float64      `json:"stringency_actual"`
+		Stringency       float64      `json:"stringency"`
 		Msg              *interface{} `json:"msg"`
 	} `json:"stringencyData"`
 }
