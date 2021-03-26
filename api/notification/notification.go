@@ -44,8 +44,8 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//check if URL is valid (very simple check) and branch if an error occurred
-	_, err = url.ParseRequestURI(notificationInput.URL)
-	if err != nil {
+	parsedURL, err := url.ParseRequestURI(notificationInput.URL)
+	if err != nil || parsedURL.Scheme != "http" && parsedURL.Scheme != "https" {
 		debug.ErrorMessage.Update(
 			http.StatusBadRequest,
 			"Notification.POST() -> Checking if URL is valid",
