@@ -146,6 +146,7 @@ func callURL(notification Notification) {
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("\nError when sending HTTP content to webhook.\nRaw error: %v\n", err.Error())
+		return
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusServiceUnavailable {
 		fmt.Printf("\nWebhook URL is not valid. Deleting webhook...\nStatus code: %v\n", res.StatusCode)
