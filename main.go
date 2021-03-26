@@ -22,11 +22,6 @@ func init() {
 		defer notification.DB.Client.Close()
 		log.Fatalln(err)
 	}
-	//set ticker to 1 second
-	notification.Ticker = time.NewTicker(time.Second * 1)
-	//set secret and signature key
-	notification.Secret = []byte{43, 123, 65, 232, 4, 42, 35, 234, 21, 122, 214}
-	notification.SignatureKey = "pMLAGX4azK5zj0uJEzXzaxCioJIisY"
 }
 
 // Main program.

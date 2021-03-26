@@ -202,7 +202,8 @@ func (policy *Policy) getHistory(country string, startDate string, endDate strin
 	return http.StatusOK, nil
 }
 
-// modifyDate increases the date by 10 days of current date if it is within the buffer.
+// modifyDate decreases the date up to 10 days of current date if it is within the buffer.
+// This is because the information from the first 10 days are stated inaccurate by the assignment.
 func (policy *Policy) modifyDate(date string) (string, error) {
 	//parse date to time format and branch if an error occurred
 	dateTime, err := time.Parse("2006-01-02", date)

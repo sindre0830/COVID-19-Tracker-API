@@ -15,38 +15,29 @@ import (
 	"time"
 )
 
-// Ticker ticks every second.
-var Ticker *time.Ticker
-
 // cachedCases keeps Cases data from last call if the trigger is 'ON_CHANGE'.
 var cachedCases = map[string]cases.Cases {}
 
 // cachedPolicies keeps Policy data from last call if the trigger is 'ON_CHANGE'.
 var cachedPolicies = map[string]policy.Policy {}
 
-// SignatureKey
-var SignatureKey string
-
-// Secret
-var Secret []byte
+// secret
+var secret = []byte{43, 123, 65, 232, 4, 42, 35, 234, 21, 122, 214}
 
 // Schedule iterates every second and calls webhooks on timeout.
 //
 // Source: https://gobyexample.com/tickers
 func Schedule() {
-	done := make(chan bool)
+	//ticks every second.
+	var ticker = time.NewTicker(time.Second * 1)
 	var i int64
-	for {
-		select {
-			case <- done:
-				return
-			case <- Ticker.C:
-				i++
-				for _, elem := range Notifications {
-					if i % elem.Timeout == 0 {
-						go callURL(elem)
-					}
-				}
+	for ;; <- ticker.C {
+		i++
+		//check every webhook and call on timeout
+		for _, elem := range Notifications {
+			if i % elem.Timeout == 0 {
+				go callURL(elem)
+			}
 		}
 	}
 }
@@ -61,7 +52,10 @@ func callURL(notification Notification) {
 		//create new GET request and branch if an error occurred
 		req, err := http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {
-			fmt.Printf("\nError when creating HTTP request to Policy.Handler().\nRaw error: %v\n", err.Error())
+			fmt.Printf(
+				"%v {\n\tError when creating HTTP request to Policy.Handler().\n\tRaw error: %v\n}\n", 
+				time.Now(), err.Error(),
+			)
 			return
 		}
 		//call the policy handler and branch if the status code is not OK
@@ -69,7 +63,10 @@ func callURL(notification Notification) {
 		recorder := httptest.NewRecorder()
 		policy.Handler(recorder, req)
 		if recorder.Result().StatusCode != http.StatusOK {
-			fmt.Printf("\nError when creating HTTP request to Policy.Handler().\nStatus code: %v\n", recorder.Result().StatusCode)
+			fmt.Printf(
+				"%v {\n\tError when creating HTTP request to Policy.Handler().\n\tStatus code: %v\n}\n", 
+				time.Now(), recorder.Result().StatusCode,
+			)
 			return
 		}
 		//check if the trigger is 'ON_CHANGE' and if it already exists in memory
@@ -86,7 +83,10 @@ func callURL(notification Notification) {
 		//convert from structure to bytes and branch if an error occurred
 		output, err = json.Marshal(policy)
 		if err != nil {
-			fmt.Printf("\nError when parsing Policy structure.\nRaw error: %v\n", err.Error())
+			fmt.Printf(
+				"%v {\n\tError when parsing Policy structure.\n\tRaw error: %v\n}\n", 
+				time.Now(), err.Error(),
+			)
 			return
 		}
 	} else {
@@ -95,7 +95,10 @@ func callURL(notification Notification) {
 		//create new GET request and branch if an error occurred
 		req, err := http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {
-			fmt.Printf("\nError when creating HTTP request to Cases.Handler().\nRaw error: %v\n", err.Error())
+			fmt.Printf(
+				"%v {\n\tError when creating HTTP request to Cases.Handler().\n\tRaw error: %v\n}\n", 
+				time.Now(), err.Error(),
+			)
 			return
 		}
 		//call the cases handler and branch if the status code is not OK
@@ -103,7 +106,10 @@ func callURL(notification Notification) {
 		recorder := httptest.NewRecorder()
 		cases.Handler(recorder, req)
 		if recorder.Result().StatusCode != http.StatusOK {
-			fmt.Printf("\nError when creating HTTP request to Cases.Handler().\nStatus code: %v\n", recorder.Result().StatusCode)
+			fmt.Printf(
+				"%v {\n\tError when creating HTTP request to Cases.Handler().\n\tStatus code: %v\n}\n", 
+				time.Now(), recorder.Result().StatusCode,
+			)
 			return
 		}
 		//check if the trigger is 'ON_CHANGE' and if it already exists in memory
@@ -120,36 +126,51 @@ func callURL(notification Notification) {
 		//convert from structure to bytes and branch if an error occurred
 		output, err = json.Marshal(cases)
 		if err != nil {
-			fmt.Printf("\nError when parsing Cases structure.\nRaw error: %v\n", err.Error())
+			fmt.Printf(
+				"%v {\n\tError when parsing Cases structure.\n\tRaw error: %v\n}\n", 
+				time.Now(), err.Error(),
+			)
 			return
 		}
 	}
 	//create new POST request and branch if an error occurred
 	req, err := http.NewRequest(http.MethodPost, notification.URL, bytes.NewBuffer(output))
 	if err != nil {
-		fmt.Printf("\nError when creating new POST request.\nRaw error: %v\n", err.Error())
+		fmt.Printf(
+			"%v {\n\tError when creating new POST request.\n\tRaw error: %v\n}\n", 
+			time.Now(), err.Error(),
+		)
 		return
 	}
 	//hash structure and branch if an error occurred
-	mac := hmac.New(sha256.New, Secret)
+	mac := hmac.New(sha256.New, secret)
 	_, err = mac.Write([]byte(output))
 	if err != nil {
-		fmt.Printf("\nError when hashing content before POST request.\nRaw error: %v\n", err.Error())
+		fmt.Printf(
+			"%v {\n\tError when hashing content before POST request.\n\tRaw error: %v\n}\n", 
+			time.Now(), err.Error(),
+		)
 		return
 	}
 	//convert hashed structure to string and add to header
-	req.Header.Add(SignatureKey, hex.EncodeToString(mac.Sum(nil)))
+	req.Header.Add("Signature", hex.EncodeToString(mac.Sum(nil)))
 	//update header to JSON
 	req.Header.Set("Content-Type", "application/json")
 	//send request to client and branch if an error occured
 	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("\nError when sending HTTP content to webhook.\nRaw error: %v\n", err.Error())
+		fmt.Printf(
+			"%v {\n\tError when sending HTTP content to webhook.\n\tRaw error: %v\n}\n", 
+			time.Now(), err.Error(),
+		)
 		return
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusServiceUnavailable {
-		fmt.Printf("\nWebhook URL is not valid. Deleting webhook...\nStatus code: %v\n", res.StatusCode)
+		fmt.Printf(
+			"%v {\n\tWebhook URL is not valid. Deleting webhook...\n\tStatus code: %v\n}\n", 
+			time.Now(), res.StatusCode,
+		)
 		DB.Delete(notification.ID)
 		return
 	}

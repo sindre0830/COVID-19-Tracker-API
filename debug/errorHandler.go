@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 // ErrorMessage is used for all error handling in the program.
@@ -45,12 +46,12 @@ func (debug *Debug) Print(w http.ResponseWriter) {
 	}
 	//send output to console
 	fmt.Printf(
-		"Error {\n" +
+		"%v {\n" +
 		"    status_code:     %v,\n" +
 		"    location:        %s,\n" +
 		"    raw_error:       %s,\n" +
 		"    possible_reason: %s \n" +
 		"}\n", 
-		debug.StatusCode, debug.Location, debug.RawError, debug.PossibleReason,
+		time.Now(), debug.StatusCode, debug.Location, debug.RawError, debug.PossibleReason,
 	)
 }
