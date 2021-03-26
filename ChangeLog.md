@@ -281,3 +281,5 @@
 [5.0.0] **Milestone Reached:** External deployment of webhooks implemented
 
 [5.1.0] development: Added global URL value and changed it to SkyHigh IP
+
+[5.2.0] development: Added better error handler in callURL for debugging

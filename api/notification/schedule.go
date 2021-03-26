@@ -94,7 +94,7 @@ func callURL(notification Notification) {
 		//create new GET request and branch if an error occurred
 		req, err := http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {
-			fmt.Println("Error creating HTTP request in callURL")
+			fmt.Printf("\nError creating HTTP request in callURL.\nRaw error: %v\n", err.Error())
 			return
 		}
 		//call the cases handler and branch if the status code is not OK
