@@ -309,3 +309,5 @@
 [6.0.0] **Milestone Reached:** Program deployed on SkyHigh
 
 [6.1.0] development: Changed elevation field in CasesHistory to interface to support 'china'
+
+[6.2.0] development: Had to revert back to int64 since interfaces can't convert to int

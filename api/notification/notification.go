@@ -22,7 +22,7 @@ var Notifications = map[string]Notification {}
 type Notification struct {
 	ID          string `json:"id"`
 	URL         string `json:"url"`
-	Timeout     int    `json:"timeout"`
+	Timeout     int64  `json:"timeout"`
 	Information string `json:"information"`
 	Country     string `json:"country"`
 	Trigger     string `json:"trigger"`

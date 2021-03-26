@@ -30,7 +30,7 @@ var secret = []byte{43, 123, 65, 232, 4, 42, 35, 234, 21, 122, 214}
 func Schedule() {
 	//ticks every second.
 	ticker := time.NewTicker(time.Second * 1)
-	i := 0
+	var i int64
 	for ;; <- ticker.C {
 		i++
 		//check every webhook and call on timeout
