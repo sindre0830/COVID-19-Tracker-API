@@ -303,3 +303,5 @@
 [5.10.1] formatting: Moved URL schema error catcher to it's own branch
 
 [5.11.0] development: Added max timeout value of 24 hours
+
+[5.12.0] development: Added testing to 'fun' package
