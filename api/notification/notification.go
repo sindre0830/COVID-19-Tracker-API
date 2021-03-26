@@ -22,7 +22,7 @@ var Notifications = map[string]Notification {}
 type Notification struct {
 	ID          string `json:"id"`
 	URL         string `json:"url"`
-	Timeout     int64  `json:"timeout"`
+	Timeout     int    `json:"timeout"`
 	Information string `json:"information"`
 	Country     string `json:"country"`
 	Trigger     string `json:"trigger"`
@@ -66,18 +66,18 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//check if timeout is valid and return and error if it isn't
-	if notificationInput.Timeout < 1 {
+	//check if timeout is valid and return an error if it isn't
+	if notificationInput.Timeout < 15 || notificationInput.Timeout > 86400 {
 		debug.ErrorMessage.Update(
 			http.StatusBadRequest,
 			"Notification.POST() -> Checking if timeout value is valid",
-			"timeout validation: value less than 1",
-			"Not valid timeout value. Example '3600'",
+			"timeout validation: value isn't within scope",
+			"Timeout value has to be larger then 15 and less then 86400(24 hours) seconds.",
 		)
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//check if trigger is valid and return and error if it isn't
+	//check if trigger is valid and return an error if it isn't
 	notificationInput.Trigger = strings.ToUpper(notificationInput.Trigger)
 	if notificationInput.Trigger != "ON_CHANGE" && notificationInput.Trigger != "ON_TIMEOUT" {
 		debug.ErrorMessage.Update(
@@ -89,7 +89,7 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 		debug.ErrorMessage.Print(w)
 		return
 	}
-	//check if field is valid and return and error if it isn't
+	//check if field is valid and return an error if it isn't
 	notificationInput.Field = strings.ToLower(notificationInput.Field)
 	if notificationInput.Field != "confirmed" && notificationInput.Field != "stringency" {
 		debug.ErrorMessage.Update(

@@ -29,8 +29,8 @@ var secret = []byte{43, 123, 65, 232, 4, 42, 35, 234, 21, 122, 214}
 // Source: https://gobyexample.com/tickers
 func Schedule() {
 	//ticks every second.
-	var ticker = time.NewTicker(time.Second * 1)
-	var i int64
+	ticker := time.NewTicker(time.Second * 1)
+	i := 0
 	for ;; <- ticker.C {
 		i++
 		//check every webhook and call on timeout
@@ -38,6 +38,9 @@ func Schedule() {
 			if i % elem.Timeout == 0 {
 				go callURL(elem)
 			}
+		}
+		if i > 86400 {
+			i = 0
 		}
 	}
 }

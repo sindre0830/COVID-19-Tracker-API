@@ -301,3 +301,5 @@
 [5.10.0] development: Added error catching if URL scheme isn't correct 'http' or 'https'
 
 [5.10.1] formatting: Moved URL schema error catcher to it's own branch
+
+[5.11.0] development: Added max timeout value of 24 hours

@@ -88,7 +88,7 @@ func (database *Database) Get() error {
 		data := elem.Data()
 		notification.ID = fmt.Sprintf("%v", data["ID"])
 		notification.URL = fmt.Sprintf("%v", data["URL"])
-		notification.Timeout = data["Timeout"].(int64)
+		notification.Timeout = data["Timeout"].(int)
 		notification.Information = fmt.Sprintf("%v", data["Information"])
 		notification.Country = fmt.Sprintf("%v", data["Country"])
 		notification.Trigger = fmt.Sprintf("%v", data["Trigger"])
