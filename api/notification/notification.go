@@ -45,11 +45,22 @@ func (notification *Notification) POST(w http.ResponseWriter, r *http.Request) {
 	}
 	//check if URL is valid (very simple check) and branch if an error occurred
 	parsedURL, err := url.ParseRequestURI(notificationInput.URL)
-	if err != nil || parsedURL.Scheme != "http" && parsedURL.Scheme != "https" {
+	if err != nil {
 		debug.ErrorMessage.Update(
 			http.StatusBadRequest,
 			"Notification.POST() -> Checking if URL is valid",
 			err.Error(),
+			"Not valid URL. Example 'http://google.com/'",
+		)
+		debug.ErrorMessage.Print(w)
+		return
+	}
+	//branch if the schema in the URL is incorrect
+	if parsedURL.Scheme != "http" && parsedURL.Scheme != "https" {
+		debug.ErrorMessage.Update(
+			http.StatusBadRequest,
+			"Notification.POST() -> Checking if URL is valid",
+			"url validation: schema is incorrect, should be 'http' or 'https'",
 			"Not valid URL. Example 'http://google.com/'",
 		)
 		debug.ErrorMessage.Print(w)
