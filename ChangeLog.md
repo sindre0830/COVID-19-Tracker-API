@@ -283,3 +283,5 @@
 [5.1.0] development: Added global URL value and changed it to SkyHigh IP
 
 [5.2.0] development: Added better error handler in callURL for debugging
+
+[5.3.0] development: Fixed IP address by adding 'http://' at the start
