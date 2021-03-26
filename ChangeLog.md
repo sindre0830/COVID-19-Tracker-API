@@ -289,3 +289,5 @@
 [5.4.0] development: Added more error handling in callURL
 
 [5.5.0] development: Fixed error handling when connection is lost to webhook
+
+[5.6.0] development: Historic ploicies data will now show correct scope

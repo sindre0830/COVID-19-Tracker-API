@@ -166,25 +166,25 @@ func (policy *Policy) getCurrent(country string) (int, error) {
 func (policy *Policy) getHistory(country string, startDate string, endDate string) (int, error) {
 	var policyHistory PolicyHistory
 	//check if dates are within the 10 day buffer and modify accordingly, branch if an error occurred
-	increasedStartDate, err := policy.modifyDate(startDate)
+	startDate, err := policy.modifyDate(startDate)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	increasedEndDate, err := policy.modifyDate(endDate)
+	endDate, err = policy.modifyDate(endDate)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 	//get data within scope and branch if an error occurred
-	status, err := policyHistory.Get(increasedStartDate, increasedEndDate)
+	status, err := policyHistory.Get(startDate, endDate)
 	if err != nil {
 		return status, err
 	}
 	//set stringency to StringencyActual and branch if it isn't filled and fall back to Stringency
-	stringencyStart := policyHistory.Data[increasedStartDate][country].StringencyActual
-	stringencyEnd := policyHistory.Data[increasedEndDate][country].StringencyActual
+	stringencyStart := policyHistory.Data[startDate][country].StringencyActual
+	stringencyEnd := policyHistory.Data[endDate][country].StringencyActual
 	if stringencyEnd == 0 {
-		stringencyStart = policyHistory.Data[increasedStartDate][country].Stringency
-		stringencyEnd = policyHistory.Data[increasedEndDate][country].Stringency
+		stringencyStart = policyHistory.Data[startDate][country].Stringency
+		stringencyEnd = policyHistory.Data[endDate][country].Stringency
 	}
 	//set default value of trend and branch if there is valid data
 	trend := 0.00
