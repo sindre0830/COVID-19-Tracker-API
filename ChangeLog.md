@@ -313,3 +313,5 @@
 [6.2.0] development: Had to revert back to int64 since interfaces can't convert to int
 
 [6.2.1] formatting: Updated 'Usage' in README
+
+[6.2.2] formatting: Updated 'Notes' in README

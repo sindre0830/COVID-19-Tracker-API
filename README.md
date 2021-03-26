@@ -323,16 +323,65 @@ Will show the last 5 inputs where the newest logs are first.
 ## Notes
 
 #### Design Decisions
-TBA
+Since the assignment didn't require us to implement caching I'm calling the REST services each time the client request data. This will often cause issues with time out which means webhook requests might not send data at all. If I had more time I would look at caching since all my problems could be solved with this.
+
+I had some problems with mmediagroup and covidtracker API since they didn't allow for filtering. If you wanted something within scope, you would get all the data for all countries then filter that yourself. This takes time for them to send and often caused a timeout. Both of these APIs failed to send correct status codes which meant that I had to check whether the data I got back was empty or not.
+
+Another problem I had was fields changing types for different countries. For example 'elevation_in_meters' could be a float for Norway and string for China. The way I handled this was with Interfaces.
+
+One problem with mmediagroup was their country definition. They wanted strictly titled names, I.e. 'France', and didn't follow any country name definition, like RestCountries API. If you wanted data for the USA you would have to type in US, while data for South Africa would be 'South Africa'. The way I dealt with this was using RestCountries API and creating an edge-case dataset where I checked alpha codes against my findings, for example, USA would be converted to US. 
+
+While it is recommended by the teacher to move the structures to a separate package, I have kept them together where they have functionality. I.e. the Cases structure will be in the same file as the function Cases.Handler(). This is because I found it easier to read the code with the structure at the top of its functionality, let me know if you disagree.
+
+#### Feedback From Last Assignment
+Last assignment I got some feedback and I have tried to improve on these points for this assignment.
+1. Too much commenting
+    - I have reduced my comments by a lot and any feedback on this would be appreciated.
+2. Not enough atomic commits
+    - I have created a ChangeLog file where I document all my commit messages, this reminded me to do more atomic commits during development.
+3. Uptime in diagnosis being a float value and not defined as seconds
+    - Uptime in diagnosis is now an integer and defined as seconds in the documentation.
 
 #### Structure
-TBA
+I decided to go with a simple folder structure that mimics the name of the package. I.e. The **debug** folder contains the **debug** package. 
+To reduce the number of files in one package, I decided to add each endpoint as a package inside the **api** folder.
+
+**api** contains tools to request data and all of the endpoints
+**debug** contains error handling.
+**dict** contains global variables.
+**fun** contains pure global functionality.
 
 #### Error Handling
-TBA
+I decided to handle errors by sending 4 variables to help with debugging. This error message will be in the form of a JSON structure and will be sent to the client and the console.
+```go
+type ErrorMessage struct {
+    StatusCode       int    `json:"status_code"`
+    Location         string `json:"location"`
+    RawError         string `json:"raw_error"`
+    PossibleReason   string `json:"possible_reason"`
+}
+```
+The status code will be sent to both the header and the structure for ease of debugging. The 'location' tells us which function this error occured. 'raw_error' is just an error message that explains what failed. 'possible_reason' is used to give a possible reason for this error.
+
+Example:
+```json
+{
+    "status_code": 400,
+    "location": "Cases.Handler() -> ValidateDates() -> Checking if inputed dates are valid",
+    "raw_error": "date validation: not enough elements",
+    "possible_reason": "Date format. Expected format: '...?scope=start_at-end_at'. Example: '...?scope=2020-01-20-2021-02-01'"
+}
+```
+
+I have implemented a check that sets possible reason to unknown where the client might not have made a mistake. I.e. if the service times out it will show "Unknown" instead of "wrong format...".
 
 #### Testing
-TBA
+```
+Coverage: fun, policy, countryinfo, cases`
+```
+Testing is done in a separate file called ```{package}_test.go```, for example ```fun_test.go```, and these are located in each package folder, for example, the ```fun_test.go``` file is located in the ```.../fun/``` folder.
 
 ##### Usage
-TBA
+For Visual Studio Code with Golang extension:
+1. Open testing file in the IDE
+2. Click the ```run test``` label for any function that you want to test
