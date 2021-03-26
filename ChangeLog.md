@@ -287,3 +287,5 @@
 [5.3.0] development: Fixed IP address by adding 'http://' at the start
 
 [5.4.0] development: Added more error handling in callURL
+
+[5.5.0] development: Fixed error handling when connection is lost to webhook
