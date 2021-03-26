@@ -295,3 +295,5 @@
 [5.7.0] development: Added time to error messages and reformatted error message in callURL
 
 [5.8.0] development: Reformatted time in error messages to 'YYYY-MM-DD HH-MM-SS'
+
+[5.9.0] development: Fixed time formatting to show month by number, not three first letters
