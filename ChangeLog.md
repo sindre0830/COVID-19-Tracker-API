@@ -285,3 +285,5 @@
 [5.2.0] development: Added better error handler in callURL for debugging
 
 [5.3.0] development: Fixed IP address by adding 'http://' at the start
+
+[5.4.0] development: Added more error handling in callURL
