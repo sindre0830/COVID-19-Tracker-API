@@ -305,3 +305,5 @@
 [5.11.0] development: Added max timeout value of 24 hours
 
 [5.12.0] development: Added testing to 'fun' package
+
+[6.0.0] **Milestone Reached:** Program deployed on SkyHigh
