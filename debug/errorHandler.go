@@ -52,6 +52,6 @@ func (debug *Debug) Print(w http.ResponseWriter) {
 		"    raw_error:       %s,\n" +
 		"    possible_reason: %s \n" +
 		"}\n", 
-		time.Now(), debug.StatusCode, debug.Location, debug.RawError, debug.PossibleReason,
+		time.Now().Format("2006-Jan-02 15:04:05"), debug.StatusCode, debug.Location, debug.RawError, debug.PossibleReason,
 	)
 }

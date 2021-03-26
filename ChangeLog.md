@@ -293,3 +293,5 @@
 [5.6.0] development: Historic ploicies data will now show correct scope
 
 [5.7.0] development: Added time to error messages and reformatted error message in callURL
+
+[5.8.0] development: Reformatted time in error messages to 'YYYY-MM-DD HH-MM-SS'

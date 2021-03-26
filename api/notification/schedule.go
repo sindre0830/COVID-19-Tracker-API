@@ -54,7 +54,7 @@ func callURL(notification Notification) {
 		if err != nil {
 			fmt.Printf(
 				"%v {\n\tError when creating HTTP request to Policy.Handler().\n\tRaw error: %v\n}\n", 
-				time.Now(), err.Error(),
+				time.Now().Format("2006-Jan-02 15:04:05"), err.Error(),
 			)
 			return
 		}
@@ -65,7 +65,7 @@ func callURL(notification Notification) {
 		if recorder.Result().StatusCode != http.StatusOK {
 			fmt.Printf(
 				"%v {\n\tError when creating HTTP request to Policy.Handler().\n\tStatus code: %v\n}\n", 
-				time.Now(), recorder.Result().StatusCode,
+				time.Now().Format("2006-Jan-02 15:04:05"), recorder.Result().StatusCode,
 			)
 			return
 		}
@@ -85,7 +85,7 @@ func callURL(notification Notification) {
 		if err != nil {
 			fmt.Printf(
 				"%v {\n\tError when parsing Policy structure.\n\tRaw error: %v\n}\n", 
-				time.Now(), err.Error(),
+				time.Now().Format("2006-Jan-02 15:04:05"), err.Error(),
 			)
 			return
 		}
@@ -97,7 +97,7 @@ func callURL(notification Notification) {
 		if err != nil {
 			fmt.Printf(
 				"%v {\n\tError when creating HTTP request to Cases.Handler().\n\tRaw error: %v\n}\n", 
-				time.Now(), err.Error(),
+				time.Now().Format("2006-Jan-02 15:04:05"), err.Error(),
 			)
 			return
 		}
@@ -108,7 +108,7 @@ func callURL(notification Notification) {
 		if recorder.Result().StatusCode != http.StatusOK {
 			fmt.Printf(
 				"%v {\n\tError when creating HTTP request to Cases.Handler().\n\tStatus code: %v\n}\n", 
-				time.Now(), recorder.Result().StatusCode,
+				time.Now().Format("2006-Jan-02 15:04:05"), recorder.Result().StatusCode,
 			)
 			return
 		}
@@ -128,7 +128,7 @@ func callURL(notification Notification) {
 		if err != nil {
 			fmt.Printf(
 				"%v {\n\tError when parsing Cases structure.\n\tRaw error: %v\n}\n", 
-				time.Now(), err.Error(),
+				time.Now().Format("2006-Jan-02 15:04:05"), err.Error(),
 			)
 			return
 		}
@@ -138,7 +138,7 @@ func callURL(notification Notification) {
 	if err != nil {
 		fmt.Printf(
 			"%v {\n\tError when creating new POST request.\n\tRaw error: %v\n}\n", 
-			time.Now(), err.Error(),
+			time.Now().Format("2006-Jan-02 15:04:05"), err.Error(),
 		)
 		return
 	}
@@ -148,7 +148,7 @@ func callURL(notification Notification) {
 	if err != nil {
 		fmt.Printf(
 			"%v {\n\tError when hashing content before POST request.\n\tRaw error: %v\n}\n", 
-			time.Now(), err.Error(),
+			time.Now().Format("2006-Jan-02 15:04:05"), err.Error(),
 		)
 		return
 	}
@@ -162,14 +162,14 @@ func callURL(notification Notification) {
 	if err != nil {
 		fmt.Printf(
 			"%v {\n\tError when sending HTTP content to webhook.\n\tRaw error: %v\n}\n", 
-			time.Now(), err.Error(),
+			time.Now().Format("2006-Jan-02 15:04:05"), err.Error(),
 		)
 		return
 	}
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusServiceUnavailable {
 		fmt.Printf(
 			"%v {\n\tWebhook URL is not valid. Deleting webhook...\n\tStatus code: %v\n}\n", 
-			time.Now(), res.StatusCode,
+			time.Now().Format("2006-Jan-02 15:04:05"), res.StatusCode,
 		)
 		DB.Delete(notification.ID)
 		return
