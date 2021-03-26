@@ -311,3 +311,5 @@
 [6.1.0] development: Changed elevation field in CasesHistory to interface to support 'china'
 
 [6.2.0] development: Had to revert back to int64 since interfaces can't convert to int
+
+[6.2.1] formatting: Updated 'Usage' in README
