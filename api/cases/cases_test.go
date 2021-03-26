@@ -51,6 +51,7 @@ func Test_CasesHistory_Get(t *testing.T) {
 		{"Confirmed", "norway"}: http.StatusBadRequest,
 		{"Confirmed", "USA"}:    http.StatusBadRequest,
 		{"Confirmed", "US"}:     http.StatusOK,
+		{"Confirmed", "china"}:  http.StatusOK,
 	}
 	//iterate through map and check each key to expected element
 	for test, expectedStatus := range testData {

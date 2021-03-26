@@ -307,3 +307,5 @@
 [5.12.0] development: Added testing to 'fun' package
 
 [6.0.0] **Milestone Reached:** Program deployed on SkyHigh
+
+[6.1.0] development: Changed elevation field in CasesHistory to interface to support 'china'
