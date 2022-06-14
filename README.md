@@ -1,4 +1,4 @@
-# [Assignment 2](https://git.gvk.idi.ntnu.no/course/prog2005/prog2005-2021/-/wikis/Assignment-2)
+# Assignment 2
 
 ### Info
 - Author: Sindre Eiklid (sindreik@stud.ntnu.no)
@@ -11,7 +11,7 @@
     - https://blog.mmediagroup.fr/post/m-media-launches-covid-19-api/
     - https://covidtracker.bsg.ox.ac.uk/about-api
 - You need to be connected to NTNU network with a VPN to run the program. If you want to run it locally, you will have to change the URL variable in the 'dict' package to ```http://localhost```.
-- Client Repo: https://git.gvk.idi.ntnu.no/course/prog2005/prog2005-2021-workspace/sindre0830/assignment-2/assignment-2-client
+- Client Repo: https://github.com/sindre0830/Webhook-Client-Side
 
 ### Usage
 
